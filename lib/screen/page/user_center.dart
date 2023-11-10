@@ -260,15 +260,15 @@ class _SettingState extends State<UserCenter> {
               customLaunch(Uri.parse(url));
             },
           ),
-          SettingsTile.navigation(
-            title: Text(
-              "Set Mtproto".tr,
-              style: textStyle,
-            ),
-            onPressed: (cxt) {
-              customLaunch(Uri.parse("tg://socks?server=127.0.0.1&port=${Get.find<ClashService>().configEntity.value!.socksPort}"));
-            },
-          ),
+          // SettingsTile.navigation(
+          //   title: Text(
+          //     "Set Mtproto".tr,
+          //     style: textStyle,
+          //   ),
+          //   onPressed: (cxt) {
+          //     customLaunch(Uri.parse("tg://socks?server=127.0.0.1&port=${Get.find<ClashService>().configEntity.value!.socksPort}"));
+          //   },
+          // ),
           SettingsTile.navigation(
             title: Text(
               "Setting".tr,

@@ -603,7 +603,10 @@ class ClashService extends GetxService with TrayListener {
     //       key: ACTION_CPOY_SYSTEM_PROXY));
     //   stringList.add(MenuItem.separator());
     // }
-    initAppTray(details: stringList, isUpdate: true);
+    if(isDesktop){
+      initAppTray(details: stringList, isUpdate: true);
+    }
+
     if (SpUtil.getBool("system_proxy", defValue: false)!) {
       await trayManager.setIcon(Platform.isWindows
           ? 'assets/images/rocket_connected.ico'

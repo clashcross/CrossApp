@@ -1,6 +1,8 @@
-# CrossApp
+# CrossApp 
 
-一款支持多种协议管理的跨平台客户端，可以运行于windows、Android、macOS、Linux等平台
+- 一款支持多种协议管理的跨平台客户端，可以运行于windows、Android、macOS、Linux等平台
+- [English](README_EN.md)
+
 
 # 对接
 
@@ -17,7 +19,7 @@
 
 # 社区
 
-Telegram Channel: [@classcross](https://t.me/clashcrosschannel)
+Telegram Group: [@classcross](https://t.me/clashcross)
 
 # 简易教程
 
@@ -26,7 +28,7 @@ Telegram Channel: [@classcross](https://t.me/clashcrosschannel)
 
 # 狂飙转发
 
-[低至30CNY2TB](https://mer.kuangbiaoyun.xyz/)
+[低至30CNY2TB](https://t.me/kuangbiaogroup)
 
 # Advisement
 

@@ -149,9 +149,10 @@ class V2boardService extends GetxService {
       isLogin.value = true;
       SpUtil.putString('Authorization', AuthLoginEntity.fromJson(res).authData);
       setLoginCertificate(email, password);
-      reload();
+
       // Get.back();
       Get.to(const MyHomePage());
+      reload();
       showBackButton.value = false; //登录完到主界面不显示返回按钮
     }
   }
@@ -185,9 +186,9 @@ class V2boardService extends GetxService {
       isLogin.value = true;
       SpUtil.putString('Authorization', AuthLoginEntity.fromJson(res).authData);
       setLoginCertificate(email, password);
-      reload();
       // Get.back();
       Get.to(const MyHomePage());
+      reload();
       showBackButton.value = false; //登录完到主界面不显示返回按钮
     }
   }

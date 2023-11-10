@@ -325,7 +325,9 @@ class _MyHomePageState extends State<MyHomePage>
     _inAppReview();
     windowManager.addListener(this);
     trayManager.addListener(this);
-    initAppTray();
+    if(isDesktop){
+      initAppTray();
+    }
     super.initState();
   }
 
