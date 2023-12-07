@@ -1,6 +1,7 @@
 //ignore_for_file: file_names
 import 'dart:async';
 import 'dart:io';
+import 'package:clashcrossplus/tools/customlaunch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -149,41 +150,8 @@ class HomePage extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       var url = vs.subScribe!.subscribeUrl;
-                      // if(url.startsWith("http://")) {
-                      //   url = url.substring(7);
-                      // } else if(url.startsWith("https://")) {
-                      //   url = url.substring(8);
-                      // }
-
                       importsub(Uri.parse(
-                          "clashcross://?url=$url&name=&siteurl=&sitename="));
-                      // if (cs.isSystemProxyObs.value) {
-                      //   cs.clearSystemProxy();
-                      //   if (!Platform.isWindows) {
-                      //     // nt.cancelNotification("ClashCrossRun");
-                      //     nt.cancelAllNotification();
-                      //   }
-                      // } else if (vs.isActive.value == false) {
-                      //   EasyLoading.show(
-                      //       status: "无有效套餐,请续费", dismissOnTap: true);
-                      // } else {
-                      //   cs.setSystemProxy();
-                      //   if (!isDesktop) {
-                      //     if (Platform.isAndroid) {
-                      //       FlutterLocalNotificationsPlugin
-                      //           flutterLocalNotificationsPlugin =
-                      //           FlutterLocalNotificationsPlugin();
-                      //       flutterLocalNotificationsPlugin
-                      //           .resolvePlatformSpecificImplementation<
-                      //               AndroidFlutterLocalNotificationsPlugin>()
-                      //           ?.requestPermission();
-                      //       Timer.periodic(const Duration(seconds: 1), (t) {
-                      //         nt.showNotification("一键连连接守护",
-                      //             "↑:${cs.uploadRate.value.toStringAsFixed(1)}KB/s ↓:${cs.downRate.value.toStringAsFixed(1)}KB/s");
-                      //       });
-                      //     }
-                      //   }
-                      // }
+                          "clashcross://?url=$url&name=&siteurl=&sitename="),context);
                     },
                     child: Card(
                       elevation: 6,
@@ -287,96 +255,6 @@ class HomePage extends StatelessWidget {
                   ),
                 );
               }
-              // else if (vs.subScribe != null) {
-              //   if ((vs.subScribe!.d + vs.subScribe!.u) >=
-              //       vs.subScribe!.transferEnable) {
-              //     return Container(
-              //       // height: kToolbarHeight,
-              //       margin: const EdgeInsets.symmetric(
-              //           horizontal: 10.0, vertical: 2),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(10),
-              //         color: isDarkTheme
-              //             ? const Color(0xff181227)
-              //             : const Color(0xffF5F5F6),
-              //       ),
-              //       padding: const EdgeInsets.all(5),
-              //       child: ListTile(
-              //         leading: const Icon(Icons.warning, color: Colors.red),
-              //         title: Text("Out of Data".tr),
-              //         // subtitle: Text(
-              //         //   "到期时间:$formattedDateTime",
-              //         //   overflow: TextOverflow.ellipsis,
-              //         // ),
-              //         trailing: TextButton(
-              //             onPressed: () {
-              //               Get.to(const Plans());
-              //             },
-              //             child: Text("Renewal".tr)),
-              //       ),
-              //     );
-              //   } else {
-              //     return Container(
-              //       // height: kToolbarHeight,
-              //       margin: const EdgeInsets.symmetric(
-              //           horizontal: 10.0, vertical: 2),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(10),
-              //         color: isDarkTheme
-              //             ? const Color(0xff181227)
-              //             : const Color(0xffF5F5F6),
-              //       ),
-              //       padding: const EdgeInsets.all(5),
-              //       child: ListTile(
-              //         leading: const Icon(
-              //           Icons.notifications_active,
-              //           color: Colors.green,
-              //         ),
-              //         title: Text("Account Valid".tr),
-              //         subtitle: Text(
-              //           "${"Valid Until".tr}:$formattedDateTime",
-              //           overflow: TextOverflow.ellipsis,
-              //         ),
-              //         trailing: TextButton(
-              //             onPressed: () {
-              //               Get.to(const InvitationPage());
-              //             },
-              //             child: Text("Referral Rewards".tr)),
-              //       ),
-              //     );
-              //   }
-              // }
-
-              return Container();
-
-              // return Container(
-              //   // height: kToolbarHeight,
-              //   margin:
-              //       const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     color: isDarkTheme
-              //         ? const Color(0xff181227)
-              //         : const Color(0xffF5F5F6),
-              //   ),
-              //   padding: const EdgeInsets.all(5),
-              //   child: ListTile(
-              //     leading: const Icon(
-              //       Icons.notifications_active,
-              //       color: Colors.green,
-              //     ),
-              //     title: const Text("账户有效"),
-              //     subtitle: Text(
-              //       "有效期:$formattedDateTime",
-              //       overflow: TextOverflow.ellipsis,
-              //     ),
-              //     trailing: TextButton(
-              //         onPressed: () {
-              //           Get.to(const InvitationPage());
-              //         },
-              //         child: const Text("推荐有奖")),
-              //   ),
-              // );
             }),
           ],
         ),
@@ -384,7 +262,7 @@ class HomePage extends StatelessWidget {
     });
   }
 
-  void importsub(command) async {
+  void importsub(command,context) async {
     if (await canLaunchUrl(command)) {
       try {
         await launchUrl(
@@ -393,19 +271,52 @@ class HomePage extends StatelessWidget {
         );
       } catch (e) {
         if (!Platform.isIOS) {
-          EasyLoading.showError('请确保您的设备已经安装clashcross');
+          _showMyDialog(context);
         } else {
           EasyLoading.showError('请确保您的设备已经安装小火箭');
         }
       }
     } else {
       if (!Platform.isIOS) {
-        print('请确保您的设备已经安装clashcross');
-        EasyLoading.showError('请确保您的设备已经安装clashcross');
+        _showMyDialog(context);
       } else {
         print('请确保您的设备已经安装小火箭');
         EasyLoading.showError('请确保您的设备已经安装Shadowrocket');
       }
     }
+  }
+
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // 设置为false，用户必须选择一个选项才能关闭对话框
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('请下载ClashCross继续使用'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Clashcross是一款支持Android,Windows,MacOS以及Linux的代理软件'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Github下载'),
+              onPressed: () {
+                customLaunch(Uri.parse("https://github.com/clashcross/ClashCross/releases"));
+              },
+            ),
+            TextButton(
+              child: const Text('官网下载'),
+              onPressed: () {
+                customLaunch(Uri.parse("https://www.clashcross.xyz/"));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

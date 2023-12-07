@@ -53,15 +53,15 @@ class V2boardService extends GetxService {
   }
 
   reload() async {
-    getUserInfo();
-    getSubscribe();
-    getPlansList();
-    getUserCommConfig();
-    getNotices();
-    getPayMethons();
-    getOrdersDetails();
-    getServersStatus();
-    inviteFetch();
+    await getUserInfo();
+    await getPlansList();
+    await getUserCommConfig();
+    await getNotices();
+    await getPayMethons();
+    await getOrdersDetails();
+    await getServersStatus();
+    await inviteFetch();
+    await getSubscribe();
   }
 
   getGuestCommConfig() async {

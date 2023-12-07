@@ -19,7 +19,7 @@
 
 # 社区
 
-Telegram Group: [@classcross](https://t.me/clashcross)
+Telegram Group: [@classcross](https://t.me/clashcross
 
 # 简易教程
 
