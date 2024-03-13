@@ -1,18 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sp_util/sp_util.dart';
 import '../../bean/order_detail_entity.dart';
-import '../../http/options.dart';
 import '../../service/v2board_service.dart';
-import '../../tools/customlaunch.dart';
-import '../plans/plans.dart';
+import '../plans/plans_page.dart';
 
 class Orders extends StatelessWidget {
   const Orders({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkTheme = SpUtil.getBool("is_dark",defValue: false)!;
+    bool isDarkTheme = SpUtil.getBool("is_dark", defValue: false)!;
     final vs = Get.find<V2boardService>();
     vs.getOrdersDetails();
     return Scaffold(
@@ -20,7 +20,7 @@ class Orders extends StatelessWidget {
         shadowColor: Colors.transparent,
         title: Text("My Orders".tr),
       ),
-      body: vs.orders!.isNotEmpty
+      body: vs.orders != null && vs.orders!.isNotEmpty
           ? ListView.builder(
               itemCount: vs.orders?.length,
               itemBuilder: (context, index) {
@@ -48,7 +48,7 @@ class Orders extends StatelessWidget {
           : Center(
               child: TextButton(
                 onPressed: () {
-                  Get.to(const Plans());
+                  Get.to(const PlansPage());
                 },
                 child: const Text("暂无订单，立即购买"),
               ),
@@ -76,12 +76,16 @@ class Orders extends StatelessWidget {
     String statusString = "未知";
     int status = order.status;
     final vs = Get.find<V2boardService>();
+    vs.getPayMethons();
+    Random random = Random();
+    int index = random.nextInt(vs.paymentMethods.length);
+    var randomElement = vs.paymentMethods[index];
     switch (status) {
       case 0:
-        statusString = "待支付";
+        statusString = "去支付";
         return TextButton(
             onPressed: () {
-              customLaunch(Uri.parse('${HttpOptions.websiteurl}#/order/${order.tradeNo}'));
+              vs.checkoutOrder(order.tradeNo, randomElement);
             },
             child: Text(statusString));
         break;
@@ -90,13 +94,6 @@ class Orders extends StatelessWidget {
         break;
       case 3:
         statusString = "已完成";
-        return TextButton(
-            onPressed: () async {
-              var url = await vs.quickUrl("order");
-              // print(url);
-              customLaunch(Uri.parse(url));
-            },
-            child: Text(statusString));
         break;
     }
     return Text(statusString);

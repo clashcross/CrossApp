@@ -7,14 +7,13 @@ import '../../bean/order_detail_entity.dart';
 import '../../bean/plan_entity.dart';
 import '../../main.dart';
 import '../../service/v2board_service.dart';
-import '../../tools/customlaunch.dart';
 import '../../tools/helper.dart';
 import '../crisp_page.dart';
 import '../page/orders.dart';
 import 'plan.dart';
 
-class Plans extends StatelessWidget {
-  const Plans({super.key});
+class PlansPage extends StatelessWidget {
+  const PlansPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,8 @@ class Plans extends StatelessWidget {
     final plans = vs.plansList;
     bool isDarkTheme = SpUtil.getBool("is_dark", defValue: false)!;
     List<OrderDetailEntity>? noPayOrders =
-        vs.orders?.where((element) => element.status == 0).toList();
+    vs.orders?.where((element) => element.status == 0).toList();
+    // vs.getOrdersDetails();
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
@@ -68,7 +68,7 @@ class Plans extends StatelessWidget {
             content.removeLast();
             String contentString = "";
             for (var element in content) {
-              contentString += "${(element["support"] ? "👍:" : "😞:") +
+              contentString += "${(element["support"] ? "👍:" : "🥵:") +
                   element["feature"]}\n";
             }
             children.add(Padding(
@@ -87,7 +87,6 @@ class Plans extends StatelessWidget {
                   child: ListTile(
                     title: Text(
                       // removeHtmlTags(plans[i].content),
-                      // content[1]["feature"],
                       contentString,
                       style: Theme.of(context).primaryTextTheme.titleMedium,
                     ),
@@ -100,7 +99,7 @@ class Plans extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                          TextStyle(color: Theme.of(context).primaryColor),
                         ),
                         const SizedBox(
                           width: 10,
@@ -111,21 +110,14 @@ class Plans extends StatelessWidget {
                               noPayOrders != null && noPayOrders.isNotEmpty
                                   ? _showDialog(context)
                                   : Get.to(Plan(
-                                      planEntity: plans[i],
-                                    ));
+                                planEntity: plans[i],
+                              ));
                             },
                             child: const Text(
                               "立即订阅",
                             ))
                       ],
                     ),
-                    // trailing: Text(
-                    //   label["label"]["text"],
-                    //   // style: TextStyle(
-                    //   //   backgroundColor: Colors.red,
-                    //   //   color: txcolor,
-                    //   // ),
-                    // ),
                   ),
                 )));
           }
@@ -184,7 +176,6 @@ class Plans extends StatelessWidget {
       ),
     );
   }
-
   Future<void> _showDialog(BuildContext context) async {
     final vs = Get.find<V2boardService>();
     return showDialog<void>(

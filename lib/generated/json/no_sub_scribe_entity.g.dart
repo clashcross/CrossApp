@@ -1,7 +1,5 @@
-
-
-import '../../bean/no_sub_scribe_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/no_sub_scribe_entity.dart';
 
 NoSubScribeEntity $NoSubScribeEntityFromJson(Map<String, dynamic> json) {
   final NoSubScribeEntity noSubScribeEntity = NoSubScribeEntity();
@@ -67,4 +65,33 @@ Map<String, dynamic> $NoSubScribeEntityToJson(NoSubScribeEntity entity) {
   data['plan'] = entity.plan;
   data['reset_day'] = entity.resetDay;
   return data;
+}
+
+extension NoSubScribeEntityExtension on NoSubScribeEntity {
+  NoSubScribeEntity copyWith({
+    dynamic planId,
+    String? token,
+    int? expiredAt,
+    int? u,
+    int? d,
+    int? transferEnable,
+    String? email,
+    String? uuid,
+    String? subscribeUrl,
+    dynamic plan,
+    dynamic resetDay,
+  }) {
+    return NoSubScribeEntity()
+      ..planId = planId ?? this.planId
+      ..token = token ?? this.token
+      ..expiredAt = expiredAt ?? this.expiredAt
+      ..u = u ?? this.u
+      ..d = d ?? this.d
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..email = email ?? this.email
+      ..uuid = uuid ?? this.uuid
+      ..subscribeUrl = subscribeUrl ?? this.subscribeUrl
+      ..plan = plan ?? this.plan
+      ..resetDay = resetDay ?? this.resetDay;
+  }
 }

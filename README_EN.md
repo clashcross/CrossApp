@@ -21,11 +21,9 @@ Telegram Channel: [@classcross](https://t.me/clashcrosschannel)
 
 # Simplified tutorial
 
-Make sure you are using the correct v2board version, modify websiteurl and appName in lib/http/options.dart. Additionally, you may need to understand Dart programming and Flutter cross-platform framework to carry out secondary development.
+Make sure you are using the correct v2board version, modify cfgurl in lib/http/options.dart. Additionally, you may need to understand Dart programming and Flutter cross-platform framework to carry out secondary development.
 
-# Share it wildly
 
-[Low as 30CNY2TB](https://mer.kuangbiaoyun.xyz/)
 
 # Advisement
 

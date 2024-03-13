@@ -63,7 +63,8 @@ class KnowledgePage extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           child: TextButton(
             onPressed: () {
-              customLaunch(Uri.parse("${HttpOptions.websiteurl}/#/knowledge"));
+              final vs = Get.find<V2boardService>();
+              customLaunch(Uri.parse("${vs.siteUrl.value.siteurl}/#/knowledge"));
             },
             child: const Text("更多文档使用教程"),
           ),

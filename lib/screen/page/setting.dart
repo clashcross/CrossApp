@@ -41,170 +41,170 @@ class _SettingState extends State<Setting> {
                 content: 'Loading'.tr,
               )
             : SettingsList(platform: DevicePlatform.iOS, sections: [
-                // SettingsSection(
-                //   title: Text(
-                //     "Proxy".tr,
-                //     style: textStyle,
-                //   ),
-                //   tiles: [
-                //     SettingsTile.navigation(
-                //       title: Text(
-                //         "Proxy mode".tr,
-                //         style: textStyle,
-                //       ),
-                //       value: Text(cs.configEntity.value!.mode!.tr),
-                //       onPressed: (cxt) {
-                //         handleProxyMode();
-                //       },
-                //     ),
-                //     SettingsTile.navigation(
-                //       title: Text(
-                //         "Socks5 proxy port".tr,
-                //         style: textStyle,
-                //       ),
-                //       value: Text(
-                //         cs.configEntity.value!.socksPort.toString(),
-                //         style: textStyle,
-                //       ),
-                //       onPressed: (cxt) {
-                //         Get.find<DialogService>().inputDialog(
-                //             title: 'Enter custom port for Socks5 proxy port'.tr,
-                //             onText: (text) {
-                //               final port = int.tryParse(text);
-                //               if (port == null) {
-                //                 // BrnToast.show('no a valid port', context)
-                //                 EasyLoading.showError('no a valid port');
-                //               } else {
-                //                 Get.find<ClashService>()
-                //                     .changeConfigField('socks-port', port);
-                //                 SpUtil.putInt('socks-port', port);
-                //               }
-                //             });
-                //       },
-                //     ),
-                //     SettingsTile.navigation(
-                //       title: Text(
-                //         "HTTP proxy port".tr,
-                //         style: textStyle,
-                //       ),
-                //       value: Text(
-                //         cs.configEntity.value!.port.toString(),
-                //         style: textStyle,
-                //       ),
-                //       onPressed: (cxt) {
-                //         Get.find<DialogService>().inputDialog(
-                //             title: 'Enter custom port for HTTP proxy port'.tr,
-                //             onText: (text) {
-                //               final port = int.tryParse(text);
-                //               if (port == null) {
-                //                 // BrnToast.show('no a valid port'.tr, context);
-                //                 EasyLoading.showError('no a valid port');
-                //               } else {
-                //                 Get.find<ClashService>()
-                //                     .changeConfigField('port', port);
-                //                 SpUtil.putInt('http-port', port);
-                //               }
-                //             });
-                //       },
-                //     ),
-                //     SettingsTile.navigation(
-                //       title: Text(
-                //         "Redir proxy port".tr,
-                //         style: textStyle,
-                //       ),
-                //       value: Text(
-                //         cs.configEntity.value!.redirPort.toString(),
-                //         style: textStyle,
-                //       ),
-                //       onPressed: (cxt) {
-                //         Get.find<DialogService>().inputDialog(
-                //             title: 'Enter custom port for redir proxy port'.tr,
-                //             onText: (text) {
-                //               final port = int.tryParse(text);
-                //               if (port == null) {
-                //                 // BrnToast.show('no a valid port'.tr, context);
-                //                 EasyLoading.showError('no a valid port'.tr);
-                //               } else {
-                //                 Get.find<ClashService>()
-                //                     .changeConfigField('redir-port', port);
-                //                 SpUtil.putInt('redir-port', port);
-                //               }
-                //             });
-                //       },
-                //     ),
-                //     SettingsTile.navigation(
-                //       title: Text(
-                //         "Mixed proxy port".tr,
-                //         style: textStyle,
-                //       ),
-                //       value: Text(
-                //         cs.configEntity.value!.mixedPort.toString(),
-                //         style: textStyle,
-                //       ),
-                //       onPressed: (cxt) {
-                //         Get.find<DialogService>().inputDialog(
-                //             title: 'Enter custom port for mixed proxy port'.tr,
-                //             onText: (text) {
-                //               final port = int.tryParse(text);
-                //               if (port == null) {
-                //                 // BrnToast.show('no a valid port'.tr, context);
-                //                 EasyLoading.showError('no a valid port'.tr);
-                //               } else {
-                //                 Get.find<ClashService>()
-                //                     .changeConfigField('mixed-port', port);
-                //                 SpUtil.putInt('mixed-port', port);
-                //               }
-                //             });
-                //       },
-                //     ),
-                //     SettingsTile.switchTile(
-                //         title: Text(
-                //           "allow_lan".tr,
-                //           style: textStyle,
-                //         ),
-                //         initialValue: cs.configEntity.value?.allowLan,
-                //         onToggle: (e) {
-                //           Get.find<ClashService>()
-                //               .changeConfigField('allow-lan', e);
-                //         }),
-                //     SettingsTile.switchTile(
-                //         title: Text(
-                //           "Enable IPv6".tr,
-                //           style: textStyle,
-                //         ),
-                //         initialValue: cs.configEntity.value?.ipv6,
-                //         onToggle: (e) {
-                //           Get.find<ClashService>().changeConfigField('ipv6', e);
-                //         }),
-                //     // SettingsTile.navigation(
-                //     //   title: Text(
-                //     //     'Profile'.tr,
-                //     //     style: textStyle,
-                //     //   ),
-                //     //   onPressed: (cxt) {
-                //     //     Get.to(const Profile());
-                //     //   },
-                //     // ),
-                //     // SettingsTile.navigation(
-                //     //   title: Text(
-                //     //     'Connections'.tr,
-                //     //     style: textStyle,
-                //     //   ),
-                //     //   onPressed: (cxt) {
-                //     //     Get.to(const Connections());
-                //     //   },
-                //     // ),
-                //     // SettingsTile.navigation(
-                //     //   title: Text(
-                //     //     'Log'.tr,
-                //     //     style: textStyle,
-                //     //   ),
-                //     //   onPressed: (cxt) {
-                //     //     Get.to(const ClashLog());
-                //     //   },
-                //     // ),
-                //   ],
-                // ),
+                SettingsSection(
+                  title: Text(
+                    "Proxy".tr,
+                    style: textStyle,
+                  ),
+                  tiles: [
+                    // SettingsTile.navigation(
+                    //   title: Text(
+                    //     "Proxy mode".tr,
+                    //     style: textStyle,
+                    //   ),
+                    //   value: Text(cs.configEntity.value!.mode!.tr),
+                    //   onPressed: (cxt) {
+                    //     handleProxyMode();
+                    //   },
+                    // ),
+                    SettingsTile.navigation(
+                      title: Text(
+                        "Socks5 proxy port".tr,
+                        style: textStyle,
+                      ),
+                      value: Text(
+                        cs.configEntity.value!.socksPort.toString(),
+                        style: textStyle,
+                      ),
+                      onPressed: (cxt) {
+                        Get.find<DialogService>().inputDialog(
+                            title: 'Enter custom port for Socks5 proxy port'.tr,
+                            onText: (text) {
+                              final port = int.tryParse(text);
+                              if (port == null) {
+                                // BrnToast.show('no a valid port', context)
+                                EasyLoading.showError('no a valid port');
+                              } else {
+                                Get.find<ClashService>()
+                                    .changeConfigField('socks-port', port);
+                                SpUtil.putInt('socks-port', port);
+                              }
+                            });
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      title: Text(
+                        "HTTP proxy port".tr,
+                        style: textStyle,
+                      ),
+                      value: Text(
+                        cs.configEntity.value!.port.toString(),
+                        style: textStyle,
+                      ),
+                      onPressed: (cxt) {
+                        Get.find<DialogService>().inputDialog(
+                            title: 'Enter custom port for HTTP proxy port'.tr,
+                            onText: (text) {
+                              final port = int.tryParse(text);
+                              if (port == null) {
+                                // BrnToast.show('no a valid port'.tr, context);
+                                EasyLoading.showError('no a valid port');
+                              } else {
+                                Get.find<ClashService>()
+                                    .changeConfigField('port', port);
+                                SpUtil.putInt('http-port', port);
+                              }
+                            });
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      title: Text(
+                        "Redir proxy port".tr,
+                        style: textStyle,
+                      ),
+                      value: Text(
+                        cs.configEntity.value!.redirPort.toString(),
+                        style: textStyle,
+                      ),
+                      onPressed: (cxt) {
+                        Get.find<DialogService>().inputDialog(
+                            title: 'Enter custom port for redir proxy port'.tr,
+                            onText: (text) {
+                              final port = int.tryParse(text);
+                              if (port == null) {
+                                // BrnToast.show('no a valid port'.tr, context);
+                                EasyLoading.showError('no a valid port'.tr);
+                              } else {
+                                Get.find<ClashService>()
+                                    .changeConfigField('redir-port', port);
+                                SpUtil.putInt('redir-port', port);
+                              }
+                            });
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      title: Text(
+                        "Mixed proxy port".tr,
+                        style: textStyle,
+                      ),
+                      value: Text(
+                        cs.configEntity.value!.mixedPort.toString(),
+                        style: textStyle,
+                      ),
+                      onPressed: (cxt) {
+                        Get.find<DialogService>().inputDialog(
+                            title: 'Enter custom port for mixed proxy port'.tr,
+                            onText: (text) {
+                              final port = int.tryParse(text);
+                              if (port == null) {
+                                // BrnToast.show('no a valid port'.tr, context);
+                                EasyLoading.showError('no a valid port'.tr);
+                              } else {
+                                Get.find<ClashService>()
+                                    .changeConfigField('mixed-port', port);
+                                SpUtil.putInt('mixed-port', port);
+                              }
+                            });
+                      },
+                    ),
+                    SettingsTile.switchTile(
+                        title: Text(
+                          "allow_lan".tr,
+                          style: textStyle,
+                        ),
+                        initialValue: cs.configEntity.value?.allowLan,
+                        onToggle: (e) {
+                          Get.find<ClashService>()
+                              .changeConfigField('allow-lan', e);
+                        }),
+                    SettingsTile.switchTile(
+                        title: Text(
+                          "Enable IPv6".tr,
+                          style: textStyle,
+                        ),
+                        initialValue: cs.configEntity.value?.ipv6,
+                        onToggle: (e) {
+                          Get.find<ClashService>().changeConfigField('ipv6', e);
+                        }),
+                    // SettingsTile.navigation(
+                    //   title: Text(
+                    //     'Profile'.tr,
+                    //     style: textStyle,
+                    //   ),
+                    //   onPressed: (cxt) {
+                    //     Get.to(const Profile());
+                    //   },
+                    // ),
+                    // SettingsTile.navigation(
+                    //   title: Text(
+                    //     'Connections'.tr,
+                    //     style: textStyle,
+                    //   ),
+                    //   onPressed: (cxt) {
+                    //     Get.to(const Connections());
+                    //   },
+                    // ),
+                    // SettingsTile.navigation(
+                    //   title: Text(
+                    //     'Log'.tr,
+                    //     style: textStyle,
+                    //   ),
+                    //   onPressed: (cxt) {
+                    //     Get.to(const ClashLog());
+                    //   },
+                    // ),
+                  ],
+                ),
                 SettingsSection(
                     title: Text(
                       "System".tr,
@@ -272,25 +272,25 @@ class _SettingState extends State<Setting> {
                       //   },
                       // ),
 
-                      // SettingsTile.switchTile(
-                      //     title: Text(
-                      //       "Set as system proxy".tr,
-                      //       style: textStyle,
-                      //     ),
-                      //     initialValue:
-                      //         SpUtil.getBool("system_proxy", defValue: false),
-                      //     onToggle: (e) async {
-                      //       if (e) {
-                      //         await Get.find<ClashService>().setSystemProxy();
-                      //         await SpUtil.putBool("system_proxy", true);
-                      //       } else {
-                      //         await Get.find<ClashService>().clearSystemProxy();
-                      //         await SpUtil.putBool("system_proxy", false);
-                      //       }
-                      //       setState(() {
-                      //         EasyLoading.showSuccess("成功",duration: Duration(seconds: 2));
-                      //       });
-                      //     }),
+                      SettingsTile.switchTile(
+                          title: Text(
+                            "Set as system proxy".tr,
+                            style: textStyle,
+                          ),
+                          initialValue:
+                              SpUtil.getBool("system_proxy", defValue: false),
+                          onToggle: (e) async {
+                            if (e) {
+                              await Get.find<ClashService>().setSystemProxy();
+                              await SpUtil.putBool("system_proxy", true);
+                            } else {
+                              await Get.find<ClashService>().clearSystemProxy();
+                              await SpUtil.putBool("system_proxy", false);
+                            }
+                            setState(() {
+                              EasyLoading.showSuccess("成功",duration: Duration(seconds: 2));
+                            });
+                          }),
                       // SettingsTile.navigation(
                       //   title: Text(
                       //     "Testing rule".tr,
@@ -362,11 +362,12 @@ class _SettingState extends State<Setting> {
                         onPressed: (cxt) {
                           SpUtil.remove("Authorization");
                           if (isDesktop) {
-                            exit(0);
-                            // cs.clearSystemProxy().then((value) => exit(0));
+                            cs.clearSystemProxy().then((value) => exit(0));
                           } else {
-                            vs.setIslogin(false);
-                            Get.to(const MyHomePage());
+                            cs.clearSystemProxy().then((value) {
+                              vs.setIslogin(false);
+                              Get.to(const MyHomePage());
+                            });
                           }
                         },
                       )
@@ -440,29 +441,29 @@ class _SettingState extends State<Setting> {
     ));
   }
 
-  // void handleProxyMode() {
-  //   Get.bottomSheet(BrnCommonActionSheet(
-  //     actions: [
-  //       // BrnCommonActionSheetItem('direct'.tr),
-  //       BrnCommonActionSheetItem('rule'.tr),
-  //       BrnCommonActionSheetItem('global'.tr),
-  //     ],
-  //     onItemClickInterceptor: (index, s) {
-  //       switch (index) {
-  //         // case 0:
-  //         //   Get.find<ClashService>().changeConfigField('mode', 'Direct');
-  //         //   break;
-  //         case 1:
-  //           Get.find<ClashService>().changeConfigField('mode', 'Rule');
-  //           break;
-  //         case 2:
-  //           Get.find<ClashService>().changeConfigField('mode', 'Global');
-  //           break;
-  //       }
-  //       return false;
-  //     },
-  //   ));
-  // }
+  void handleProxyMode() {
+    Get.bottomSheet(BrnCommonActionSheet(
+      actions: [
+        // BrnCommonActionSheetItem('direct'.tr),
+        BrnCommonActionSheetItem('rule'.tr),
+        BrnCommonActionSheetItem('global'.tr),
+      ],
+      onItemClickInterceptor: (index, s) {
+        switch (index) {
+          // case 0:
+          //   Get.find<ClashService>().changeConfigField('mode', 'Direct');
+          //   break;
+          case 0:
+            Get.find<ClashService>().changeConfigField('mode', 'Rule');
+            break;
+          case 1:
+            Get.find<ClashService>().changeConfigField('mode', 'Global');
+            break;
+        }
+        return false;
+      },
+    ));
+  }
 
   listTileSet(String title, String description, bool value,
           Function(bool)? onChanged) =>

@@ -1,7 +1,5 @@
-
-
-import '../../bean/plan_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/plan_entity.dart';
 
 PlanEntity $PlanEntityFromJson(Map<String, dynamic> json) {
   final PlanEntity planEntity = PlanEntity();
@@ -123,4 +121,55 @@ Map<String, dynamic> $PlanEntityToJson(PlanEntity entity) {
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension PlanEntityExtension on PlanEntity {
+  PlanEntity copyWith({
+    int? id,
+    int? groupId,
+    int? transferEnable,
+    String? name,
+    int? speedLimit,
+    int? xShow,
+    int? sort,
+    int? renew,
+    String? content,
+    int? monthPrice,
+    int? quarterPrice,
+    int? halfYearPrice,
+    int? yearPrice,
+    int? twoYearPrice,
+    int? threeYearPrice,
+    int? onetimePrice,
+    int? resetPrice,
+    int? resetTrafficMethod,
+    dynamic inventoryLimit,
+    dynamic capacityLimit,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return PlanEntity()
+      ..id = id ?? this.id
+      ..groupId = groupId ?? this.groupId
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..name = name ?? this.name
+      ..speedLimit = speedLimit ?? this.speedLimit
+      ..xShow = xShow ?? this.xShow
+      ..sort = sort ?? this.sort
+      ..renew = renew ?? this.renew
+      ..content = content ?? this.content
+      ..monthPrice = monthPrice ?? this.monthPrice
+      ..quarterPrice = quarterPrice ?? this.quarterPrice
+      ..halfYearPrice = halfYearPrice ?? this.halfYearPrice
+      ..yearPrice = yearPrice ?? this.yearPrice
+      ..twoYearPrice = twoYearPrice ?? this.twoYearPrice
+      ..threeYearPrice = threeYearPrice ?? this.threeYearPrice
+      ..onetimePrice = onetimePrice ?? this.onetimePrice
+      ..resetPrice = resetPrice ?? this.resetPrice
+      ..resetTrafficMethod = resetTrafficMethod ?? this.resetTrafficMethod
+      ..inventoryLimit = inventoryLimit ?? this.inventoryLimit
+      ..capacityLimit = capacityLimit ?? this.capacityLimit
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

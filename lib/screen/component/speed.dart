@@ -10,10 +10,10 @@ class SpeedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Obx(() => Container(width: 150,height: 50,child: BrnEnhanceNumberCard(
+        Obx(() => SizedBox(width: 150,height: 50,child: BrnEnhanceNumberCard(
           backgroundColor: Colors.transparent,
           itemChildren: [
             BrnNumberInfoItemModel(

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../http/options.dart';
 import '../../service/clash_service.dart';
 import 'speed.dart';
 import 'windows_panel.dart';
@@ -102,7 +101,7 @@ class DeskOptions extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration:
                       const BoxDecoration(color: Colors.transparent),
-                      child: const Text(HttpOptions.appName,),
+                      child: Text("KuangBiaoYun".tr),
                       // child: const SpeedWidget(),
                   ),
                 ),

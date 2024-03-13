@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -20,16 +23,24 @@ class Plan extends StatefulWidget {
 
 class _PlanState extends State<Plan> {
   String selectedPrice = '';
-  PaymentMethodEntity? selectedPaymentMethod;
+  // PaymentMethodEntity? selectedPaymentMethod;
   var couponController = TextEditingController();
   bool isPriceSelected = false;
-  bool isPaymentMethodSelected = false;
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkTheme = SpUtil.getBool("is_dark",defValue: false)!;
+    bool isDarkTheme = SpUtil.getBool("is_dark", defValue: false)!;
     final vs = Get.find<V2boardService>();
-
+    List content = jsonDecode(
+      removeHtmlTags(widget.planEntity.content),
+    );
+    var label = content.last;
+    content.removeLast();
+    String contentString = "";
+    for (var element in content) {
+      contentString +=
+          "${(element["support"] ? "👍:" : "🥵:") + element["feature"]}\n";
+    }
     return Scaffold(
         appBar: AppBar(
           shadowColor: Colors.transparent,
@@ -37,24 +48,24 @@ class _PlanState extends State<Plan> {
         ),
         body: Obx(() => ListView(
               children: [
-                Container(
-                  // height: kToolbarHeight,
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: isDarkTheme
-                        ? const Color(0xff181227)
-                        : const Color(0xffF5F5F6),
-                  ),
-                  padding: const EdgeInsets.all(5),
-                  child: Lottie.asset(
-                    'assets/images/plan_buy.json',
-                    // width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
+                // Container(
+                //   // height: kToolbarHeight,
+                //   margin: const EdgeInsets.symmetric(
+                //       horizontal: 10.0, vertical: 2),
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(10),
+                //     color: isDarkTheme
+                //         ? const Color(0xff181227)
+                //         : const Color(0xffF5F5F6),
+                //   ),
+                //   padding: const EdgeInsets.all(5),
+                //   child: Lottie.asset(
+                //     'assets/images/plan_buy.json',
+                //     // width: MediaQuery.of(context).size.width,
+                //     height: MediaQuery.of(context).size.height * 0.2,
+                //     fit: BoxFit.fitHeight,
+                //   ),
+                // ),
                 Container(
                   // height: kToolbarHeight,
                   margin:
@@ -68,7 +79,8 @@ class _PlanState extends State<Plan> {
                   padding: const EdgeInsets.all(5),
                   child: ListTile(
                     title: Text(
-                      removeHtmlTags(widget.planEntity.content),
+                      // removeHtmlTags(widget.planEntity.content),
+                      contentString,
                       style: Theme.of(context).primaryTextTheme.titleMedium,
                     ),
                   ),
@@ -109,19 +121,19 @@ class _PlanState extends State<Plan> {
                   padding: const EdgeInsets.all(5),
                   child: buildPriceOptions(widget.planEntity),
                 ),
-                Container(
-                  // height: kToolbarHeight,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: isDarkTheme
-                        ? const Color(0xff181227)
-                        : const Color(0xffF5F5F6),
-                  ),
-                  padding: const EdgeInsets.all(5),
-                  child: buildPaymentMethodOptions(),
-                ),
+                // Container(
+                //   // height: kToolbarHeight,
+                //   margin:
+                //       const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(10),
+                //     color: isDarkTheme
+                //         ? const Color(0xff181227)
+                //         : const Color(0xffF5F5F6),
+                //   ),
+                //   padding: const EdgeInsets.all(5),
+                //   child: buildPaymentMethodOptions(),
+                // ),
                 Container(
                     // height: kToolbarHeight,
                     margin: const EdgeInsets.symmetric(
@@ -134,10 +146,13 @@ class _PlanState extends State<Plan> {
                     ),
                     padding: const EdgeInsets.all(5),
                     child: TextButton(
-                      onPressed: isPriceSelected && isPaymentMethodSelected
+                      onPressed: isPriceSelected
                           ? () {
+                        Random random = Random();
+                        int index = random.nextInt(vs.paymentMethods.length);
+                        var randomElement = vs.paymentMethods[index];
                               vs.createOrder(widget.planEntity.id,
-                                  selectedPrice, selectedPaymentMethod,
+                                  selectedPrice, randomElement,
                                   couponCode: couponController.text);
                             }
                           : null,
@@ -165,7 +180,7 @@ class _PlanState extends State<Plan> {
                         ),
                       ),
                       child: const Text(
-                        "去支付",
+                        "确认",
                         style: TextStyle(
                           color: Colors.white, // Text color
                           fontWeight: FontWeight.bold,
@@ -218,39 +233,77 @@ class _PlanState extends State<Plan> {
     );
   }
 
-  Widget buildPaymentMethodOptions() {
-    final vs = Get.find<V2boardService>();
-    final paymentMethods = vs.paymentMethods;
-    if (paymentMethods.isNotEmpty) {
-      return Row(
-        children: paymentMethods.map((method) {
-          return Expanded(
-            child: RadioListTile(
-              title: Text(method.name),
-              // secondary: Image.network(
-              //   method.icon,
-              //   width: 30,
-              // ),
-              value: method,
-              groupValue: selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  selectedPaymentMethod = value;
-                  isPaymentMethodSelected = true;
-                });
-              },
-            ),
-          );
-        }).toList(),
-      );
-    }
-    return Center(
-      child: TextButton(
-        onPressed: () {
-          vs.getPayMethons();
-        },
-        child: const Text("重新加载"),
-      ),
-    );
-  }
+  // Widget buildPaymentMethodOptions() {
+  //   final vs = Get.find<V2boardService>();
+  //   final paymentMethods = vs.paymentMethods;
+  //   if (paymentMethods.isNotEmpty) {
+  //     return Row(
+  //       children: paymentMethods.map((method) {
+  //         return Expanded(
+  //           child: RadioListTile(
+  //             title: Text(method.name),
+  //             // secondary: Image.network(
+  //             //   method.icon,
+  //             //   width: 30,
+  //             // ),
+  //             value: method,
+  //             groupValue: selectedPaymentMethod,
+  //             onChanged: (value) {
+  //               setState(() {
+  //                 selectedPaymentMethod = value;
+  //                 isPaymentMethodSelected = true;
+  //               });
+  //             },
+  //           ),
+  //         );
+  //       }).toList(),
+  //     );
+  //   }
+  //   return Center(
+  //     child: TextButton(
+  //       onPressed: () {
+  //         vs.getPayMethons();
+  //       },
+  //       child: const Text("重新加载"),
+  //     ),
+  //   );
+  // }
+
+  // Future<void> _showConfirmDialog(BuildContext context) async {
+  //   final vs = Get.find<V2boardService>();
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false, // 设置为false，用户必须选择一个选项才能关闭对话框
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('支付提醒'),
+  //         content: const SingleChildScrollView(
+  //           child: ListBody(
+  //             children: <Widget>[
+  //               Text('1，支付可能会跳转到浏览器；2,支付通道如果收款方为小卖部，个人等,请放心支付'),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('暂不购买'),
+  //             onPressed: () {
+  //               // customLaunch(Uri.parse("https://t.me/freevpnget"));
+  //               Get.back();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: const Text('去支付'),
+  //             onPressed: () {
+  //               vs.createOrder(
+  //                   widget.planEntity.id, selectedPrice, selectedPaymentMethod,
+  //                   couponCode: couponController.text);
+  //               // Get.back();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

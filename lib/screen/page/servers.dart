@@ -4,6 +4,7 @@ import 'package:sp_util/sp_util.dart';
 
 import '../../service/v2board_service.dart';
 import '../plans/plans.dart';
+import '../plans/plans_page.dart';
 
 class Servers extends StatelessWidget {
   const Servers({super.key});
@@ -50,7 +51,7 @@ class Servers extends StatelessWidget {
             : Center(
                 child: TextButton(
                   onPressed: () {
-                    Get.to(const Plans());
+                    Get.to(const PlansPage());
                   },
                   child: const Text("无法查看节点状态,立即购买"),
                 ),

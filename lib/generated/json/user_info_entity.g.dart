@@ -1,7 +1,5 @@
-
-
-import '../../bean/user_info_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/user_info_entity.dart';
 
 UserInfoEntity $UserInfoEntityFromJson(Map<String, dynamic> json) {
   final UserInfoEntity userInfoEntity = UserInfoEntity();
@@ -92,4 +90,43 @@ Map<String, dynamic> $UserInfoEntityToJson(UserInfoEntity entity) {
   data['uuid'] = entity.uuid;
   data['avatar_url'] = entity.avatarUrl;
   return data;
+}
+
+extension UserInfoEntityExtension on UserInfoEntity {
+  UserInfoEntity copyWith({
+    String? email,
+    int? transferEnable,
+    dynamic lastLoginAt,
+    int? createdAt,
+    int? banned,
+    int? remindExpire,
+    int? remindTraffic,
+    int? expiredAt,
+    int? balance,
+    int? commissionBalance,
+    int? planId,
+    dynamic discount,
+    dynamic commissionRate,
+    dynamic telegramId,
+    String? uuid,
+    String? avatarUrl,
+  }) {
+    return UserInfoEntity()
+      ..email = email ?? this.email
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..lastLoginAt = lastLoginAt ?? this.lastLoginAt
+      ..createdAt = createdAt ?? this.createdAt
+      ..banned = banned ?? this.banned
+      ..remindExpire = remindExpire ?? this.remindExpire
+      ..remindTraffic = remindTraffic ?? this.remindTraffic
+      ..expiredAt = expiredAt ?? this.expiredAt
+      ..balance = balance ?? this.balance
+      ..commissionBalance = commissionBalance ?? this.commissionBalance
+      ..planId = planId ?? this.planId
+      ..discount = discount ?? this.discount
+      ..commissionRate = commissionRate ?? this.commissionRate
+      ..telegramId = telegramId ?? this.telegramId
+      ..uuid = uuid ?? this.uuid
+      ..avatarUrl = avatarUrl ?? this.avatarUrl;
+  }
 }

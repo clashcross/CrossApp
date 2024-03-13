@@ -27,3 +27,16 @@ Map<String, dynamic> $AuthLoginEntityToJson(AuthLoginEntity entity) {
   data['auth_data'] = entity.authData;
   return data;
 }
+
+extension AuthLoginEntityExtension on AuthLoginEntity {
+  AuthLoginEntity copyWith({
+    String? token,
+    int? isAdmin,
+    String? authData,
+  }) {
+    return AuthLoginEntity()
+      ..token = token ?? this.token
+      ..isAdmin = isAdmin ?? this.isAdmin
+      ..authData = authData ?? this.authData;
+  }
+}

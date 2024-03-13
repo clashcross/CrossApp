@@ -10,7 +10,7 @@ class HttpUtils {
   static Future get({
     required String path,
     Map<String, dynamic>? queryParameters,
-    bool showLoading = true,
+    bool showLoading = false,
     bool showErrorMessage = true,
   }) {
     return httpRequest.request(

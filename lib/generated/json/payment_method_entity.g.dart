@@ -1,7 +1,5 @@
-
-
-import '../../bean/payment_method_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/payment_method_entity.dart';
 
 PaymentMethodEntity $PaymentMethodEntityFromJson(Map<String, dynamic> json) {
   final PaymentMethodEntity paymentMethodEntity = PaymentMethodEntity();
@@ -41,4 +39,23 @@ Map<String, dynamic> $PaymentMethodEntityToJson(PaymentMethodEntity entity) {
   data['handling_fee_fixed'] = entity.handlingFeeFixed;
   data['handling_fee_percent'] = entity.handlingFeePercent;
   return data;
+}
+
+extension PaymentMethodEntityExtension on PaymentMethodEntity {
+  PaymentMethodEntity copyWith({
+    double? id,
+    String? name,
+    String? payment,
+    dynamic icon,
+    dynamic handlingFeeFixed,
+    dynamic handlingFeePercent,
+  }) {
+    return PaymentMethodEntity()
+      ..id = id ?? this.id
+      ..name = name ?? this.name
+      ..payment = payment ?? this.payment
+      ..icon = icon ?? this.icon
+      ..handlingFeeFixed = handlingFeeFixed ?? this.handlingFeeFixed
+      ..handlingFeePercent = handlingFeePercent ?? this.handlingFeePercent;
+  }
 }

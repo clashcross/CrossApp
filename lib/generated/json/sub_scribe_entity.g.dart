@@ -1,7 +1,5 @@
-
-
-import '../../bean/sub_scribe_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/sub_scribe_entity.dart';
 
 SubScribeEntity $SubScribeEntityFromJson(Map<String, dynamic> json) {
   final SubScribeEntity subScribeEntity = SubScribeEntity();
@@ -67,6 +65,35 @@ Map<String, dynamic> $SubScribeEntityToJson(SubScribeEntity entity) {
   data['subscribe_url'] = entity.subscribeUrl;
   data['reset_day'] = entity.resetDay;
   return data;
+}
+
+extension SubScribeEntityExtension on SubScribeEntity {
+  SubScribeEntity copyWith({
+    int? planId,
+    String? token,
+    int? expiredAt,
+    int? u,
+    int? d,
+    int? transferEnable,
+    String? email,
+    String? uuid,
+    SubScribePlan? plan,
+    String? subscribeUrl,
+    int? resetDay,
+  }) {
+    return SubScribeEntity()
+      ..planId = planId ?? this.planId
+      ..token = token ?? this.token
+      ..expiredAt = expiredAt ?? this.expiredAt
+      ..u = u ?? this.u
+      ..d = d ?? this.d
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..email = email ?? this.email
+      ..uuid = uuid ?? this.uuid
+      ..plan = plan ?? this.plan
+      ..subscribeUrl = subscribeUrl ?? this.subscribeUrl
+      ..resetDay = resetDay ?? this.resetDay;
+  }
 }
 
 SubScribePlan $SubScribePlanFromJson(Map<String, dynamic> json) {
@@ -188,4 +215,55 @@ Map<String, dynamic> $SubScribePlanToJson(SubScribePlan entity) {
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension SubScribePlanExtension on SubScribePlan {
+  SubScribePlan copyWith({
+    int? id,
+    int? groupId,
+    int? transferEnable,
+    String? name,
+    int? speedLimit,
+    int? xShow,
+    int? sort,
+    int? renew,
+    String? content,
+    int? monthPrice,
+    dynamic quarterPrice,
+    dynamic halfYearPrice,
+    dynamic yearPrice,
+    dynamic twoYearPrice,
+    dynamic threeYearPrice,
+    dynamic onetimePrice,
+    dynamic resetPrice,
+    int? resetTrafficMethod,
+    dynamic inventoryLimit,
+    dynamic capacityLimit,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return SubScribePlan()
+      ..id = id ?? this.id
+      ..groupId = groupId ?? this.groupId
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..name = name ?? this.name
+      ..speedLimit = speedLimit ?? this.speedLimit
+      ..xShow = xShow ?? this.xShow
+      ..sort = sort ?? this.sort
+      ..renew = renew ?? this.renew
+      ..content = content ?? this.content
+      ..monthPrice = monthPrice ?? this.monthPrice
+      ..quarterPrice = quarterPrice ?? this.quarterPrice
+      ..halfYearPrice = halfYearPrice ?? this.halfYearPrice
+      ..yearPrice = yearPrice ?? this.yearPrice
+      ..twoYearPrice = twoYearPrice ?? this.twoYearPrice
+      ..threeYearPrice = threeYearPrice ?? this.threeYearPrice
+      ..onetimePrice = onetimePrice ?? this.onetimePrice
+      ..resetPrice = resetPrice ?? this.resetPrice
+      ..resetTrafficMethod = resetTrafficMethod ?? this.resetTrafficMethod
+      ..inventoryLimit = inventoryLimit ?? this.inventoryLimit
+      ..capacityLimit = capacityLimit ?? this.capacityLimit
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

@@ -13,7 +13,7 @@ class InvitationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkTheme = SpUtil.getBool("is_dark",defValue: false)!;
+    bool isDarkTheme = SpUtil.getBool("is_dark", defValue: false)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -30,23 +30,32 @@ class InvitationPage extends StatelessWidget {
         if (inviteFetchEntityEntity != null) {
           return ListView(
             children: [
-              Container(
-                // height: kToolbarHeight,
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: isDarkTheme
-                      ? const Color(0xff181227)
-                      : const Color(0xffF5F5F6),
+              // Container(
+              //   // height: kToolbarHeight,
+              //   margin:
+              //       const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(10),
+              //     color: isDarkTheme
+              //         ? const Color(0xff181227)
+              //         : const Color(0xffF5F5F6),
+              //   ),
+              //   padding: const EdgeInsets.all(5),
+              //   child: Lottie.asset(
+              //     'assets/images/animation_Invitation.json',
+              //     // width: MediaQuery.of(context).size.width,
+              //     height: MediaQuery.of(context).size.height * 0.2,
+              //     fit: BoxFit.fitHeight,
+              //   ),
+              // ),
+              const ListTile(
+                leading: Icon(
+                  Icons.pattern,
+                  color: Colors.green,
                 ),
-                padding: const EdgeInsets.all(5),
-                child: Lottie.asset(
-                  'assets/images/animation_Invitation.json',
-                  // width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  fit: BoxFit.fitHeight,
-                ),
+                title: Text("加入我们的合作者计划"),
+                subtitle: Text(
+                    "每邀请一个注册成功即增加流量和使用时长;邀请的用户购买了套餐,您将获得每次购买金额20%提成.对于符合条件的合作者,每邀请一个注册即可额外获得分成.具体政策请查看官网"),
               ),
               Container(
                 // height: kToolbarHeight,
@@ -61,9 +70,9 @@ class InvitationPage extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 child: ListTile(
                   // leading: const Text('我的邀请'),
-                  trailing: Text(userInfo.value?.commissionBalance == 0
+                  trailing: Text(userInfo.value.commissionBalance == 0
                       ? '0 ${userCommConfigEntity.value.currency}'
-                      : (userInfo.value!.commissionBalance / 100)
+                      : (userInfo.value.commissionBalance / 100)
                               .toStringAsExponential(2) +
                           userCommConfigEntity.value.currency),
                   title: const Text("当前佣金"),
@@ -138,8 +147,9 @@ class InvitationPage extends StatelessWidget {
                               Text(inviteFetchEntityEntity.codes[index].code),
                               TextButton(
                                   onPressed: () {
+                                    final vs = Get.find<V2boardService>();
                                     FlutterClipboard.copy(
-                                            "${HttpOptions.websiteurl}#/register?code=${inviteFetchEntityEntity.codes[index].code}")
+                                            "${vs.siteUrl.value.siteurl}#/register?code=${inviteFetchEntityEntity.codes[index].code}")
                                         .then((value) {
                                       // BrnToast.show('Success'.tr, context);
                                       EasyLoading.showSuccess('Success'.tr);
@@ -165,11 +175,10 @@ class InvitationPage extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 child: TextButton(
                   onPressed: () async {
-                    var url = await vs.quickUrl("invite");
-                    customLaunch(
-                        Uri.parse(url));
+                    var url = await vs.quickUrl("stage/invite");
+                    customLaunch(Uri.parse(url));
                   },
-                  child: const Text('提现、划转等,请访问我们的网站操作'),
+                  child: const Text('提现、划转等,请访问官网'),
                 ),
               ),
             ],

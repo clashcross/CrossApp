@@ -1,0 +1,170 @@
+import 'dart:io';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+
+import '../screen/plans/plans_page.dart';
+import 'clash_service.dart';
+
+// 定义类
+class AdMobService extends GetxService {
+// 创建单例
+  static AdMobService get to => Get.find();
+
+// 在这里插入你的AdMob应用ID
+  final String appId =
+      Platform.isAndroid ? '你的Android AdMob 应用ID' : '你的iOS AdMob 应用ID';
+
+// 广告单元
+  final String bannerAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-8846782544598831/8866056520'
+      : '你的iOS banner 广告单元ID';
+  final String interstitialAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-8846782544598831/2871850001'
+      : '你的iOS 插屏广告单元ID';
+  final String rewardedAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-8846782544598831/8315748376'
+      : '你的iOS 激励视频广告单元ID';
+  int interstitialAdloadtimes = 0;
+  int rewardedAdtimes = 0;
+
+// 广告
+  BannerAd? bannerAd;
+  InterstitialAd? interstitialAd;
+  RewardedAd? rewardedAd;
+
+// 初始化AdMob
+  Future<AdMobService> init() async {
+    // await MobileAds.instance.initialize();
+
+// BannerAd
+    bannerAd = BannerAd(
+      adUnitId: bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('Ad failed to load: $error');
+        },
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+        onAdClosed: (Ad ad) => print('Ad closed.'),
+        onAdImpression: (Ad ad) => print('Ad impression.'),
+      ),
+    );
+
+// 初始化并加载插屏和激励视频广告
+    loadInterstitialAd();
+    loadRewardedAd();
+
+    return this;
+  }
+
+// 加载Banner广告
+  Future<void> showBannerAd() async {
+    await bannerAd!.load();
+  }
+
+// 销毁 Banner 广告
+  void disposeBannerAd() {
+    bannerAd!.dispose();
+  }
+
+// 加载 and 展示插屏广告
+  Future<void> loadInterstitialAd() async {
+    print("loadInterstitialAd---");
+    final cs = Get.find<ClashService>();
+    InterstitialAd.load(
+      adUnitId: interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          interstitialAd = ad;
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            // Called when the ad showed the full screen content.
+              onAdShowedFullScreenContent: (ad) {},
+              // Called when an impression occurs on the ad.
+              onAdImpression: (ad) {},
+              // Called when the ad failed to show full screen content.
+              onAdFailedToShowFullScreenContent: (ad, err) {
+                // Dispose the ad here to free resources.
+                interstitialAd = null;
+                ad.dispose();
+              },
+              // Called when the ad dismissed full screen content.
+              onAdDismissedFullScreenContent: (ad) {
+                EasyLoading.showInfo("广告仅展示于免费用户,成为付费用户即可去除广告");
+                Get.to(const PlansPage());
+                // Dispose the ad here to free resources.
+                interstitialAd = null;
+                ad.dispose();
+              },
+              // Called when a click is recorded for an ad.
+              onAdClicked: (ad) {});
+
+          // interstitialAd!.show();
+          print('$InterstitialAd loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          interstitialAdloadtimes++;
+          interstitialAd = null;
+          // if (interstitialAdloadtimes < 3) {
+          //   loadInterstitialAd();
+          // }
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+// 加载 and 展示激励视频广告
+  Future<void> loadRewardedAd() async {
+    print("loadRewardedAd---");
+    final cs = Get.find<ClashService>();
+    RewardedAd.load(
+      adUnitId: rewardedAdUnitId,
+      request: AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) {
+          rewardedAd = ad;
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            // Called when the ad showed the full screen content.
+              onAdShowedFullScreenContent: (ad) {},
+              // Called when an impression occurs on the ad.
+              onAdImpression: (ad) {},
+              // Called when the ad failed to show full screen content.
+              onAdFailedToShowFullScreenContent: (ad, err) {
+                rewardedAd = null;
+                // Dispose the ad here to free resources.
+                ad.dispose();
+              },
+              // Called when the ad dismissed full screen content.
+              onAdDismissedFullScreenContent: (ad) {
+                Get.to(const PlansPage());
+                EasyLoading.showInfo("广告仅展示于免费用户,成为付费用户即可去除广告");
+                rewardedAd = null;
+                // Dispose the ad here to free resources.
+                ad.dispose();
+              },
+              // Called when a click is recorded for an ad.
+              onAdClicked: (ad) {});
+
+          // rewardedAd!.show(
+          //   onUserEarnedReward: (adWhithoutView, rewardItem) {
+          //     // 必要时处理用户赚取的奖励
+          //     print('onUserEarnedReward');
+          //   },
+          // );
+          print('$RewardedAd loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          rewardedAdtimes++;
+          // if (rewardedAdtimes < 3) {
+          //   loadRewardedAd();
+          // }
+          rewardedAd = null;
+          print('RewardedAd failed to load: $error');
+        },
+      ),
+    );
+  }
+}

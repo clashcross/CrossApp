@@ -1,7 +1,5 @@
-
-
-import '../../bean/order_detail_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/order_detail_entity.dart';
 
 OrderDetailEntity $OrderDetailEntityFromJson(Map<String, dynamic> json) {
   final OrderDetailEntity orderDetailEntity = OrderDetailEntity();
@@ -146,6 +144,66 @@ Map<String, dynamic> $OrderDetailEntityToJson(OrderDetailEntity entity) {
   return data;
 }
 
+extension OrderDetailEntityExtension on OrderDetailEntity {
+  OrderDetailEntity copyWith({
+    int? id,
+    dynamic inviteUserId,
+    int? userId,
+    int? planId,
+    int? couponId,
+    dynamic paymentId,
+    int? type,
+    String? period,
+    String? tradeNo,
+    dynamic callbackNo,
+    int? totalAmount,
+    dynamic handlingAmount,
+    int? discountAmount,
+    dynamic surplusAmount,
+    dynamic refundAmount,
+    dynamic balanceAmount,
+    dynamic surplusOrderIds,
+    int? status,
+    int? commissionStatus,
+    int? commissionBalance,
+    dynamic actualCommissionBalance,
+    dynamic paidAt,
+    int? createdAt,
+    int? updatedAt,
+    OrderDetailPlan? plan,
+    int? tryOutPlanId,
+  }) {
+    return OrderDetailEntity()
+      ..id = id ?? this.id
+      ..inviteUserId = inviteUserId ?? this.inviteUserId
+      ..userId = userId ?? this.userId
+      ..planId = planId ?? this.planId
+      ..couponId = couponId ?? this.couponId
+      ..paymentId = paymentId ?? this.paymentId
+      ..type = type ?? this.type
+      ..period = period ?? this.period
+      ..tradeNo = tradeNo ?? this.tradeNo
+      ..callbackNo = callbackNo ?? this.callbackNo
+      ..totalAmount = totalAmount ?? this.totalAmount
+      ..handlingAmount = handlingAmount ?? this.handlingAmount
+      ..discountAmount = discountAmount ?? this.discountAmount
+      ..surplusAmount = surplusAmount ?? this.surplusAmount
+      ..refundAmount = refundAmount ?? this.refundAmount
+      ..balanceAmount = balanceAmount ?? this.balanceAmount
+      ..surplusOrderIds = surplusOrderIds ?? this.surplusOrderIds
+      ..status = status ?? this.status
+      ..commissionStatus = commissionStatus ?? this.commissionStatus
+      ..commissionBalance = commissionBalance ?? this.commissionBalance
+      ..actualCommissionBalance = actualCommissionBalance ??
+          this.actualCommissionBalance
+      ..paidAt = paidAt ?? this.paidAt
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt
+      ..plan = plan ?? this.plan
+      ..tryOutPlanId = tryOutPlanId ?? this.tryOutPlanId;
+  }
+}
+
 OrderDetailPlan $OrderDetailPlanFromJson(Map<String, dynamic> json) {
   final OrderDetailPlan orderDetailPlan = OrderDetailPlan();
   final int? id = jsonConvert.convert<int>(json['id']);
@@ -265,4 +323,55 @@ Map<String, dynamic> $OrderDetailPlanToJson(OrderDetailPlan entity) {
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension OrderDetailPlanExtension on OrderDetailPlan {
+  OrderDetailPlan copyWith({
+    int? id,
+    int? groupId,
+    int? transferEnable,
+    String? name,
+    int? speedLimit,
+    int? xShow,
+    int? sort,
+    int? renew,
+    String? content,
+    int? monthPrice,
+    dynamic quarterPrice,
+    dynamic halfYearPrice,
+    dynamic yearPrice,
+    dynamic twoYearPrice,
+    dynamic threeYearPrice,
+    dynamic onetimePrice,
+    dynamic resetPrice,
+    int? resetTrafficMethod,
+    dynamic inventoryLimit,
+    dynamic capacityLimit,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return OrderDetailPlan()
+      ..id = id ?? this.id
+      ..groupId = groupId ?? this.groupId
+      ..transferEnable = transferEnable ?? this.transferEnable
+      ..name = name ?? this.name
+      ..speedLimit = speedLimit ?? this.speedLimit
+      ..xShow = xShow ?? this.xShow
+      ..sort = sort ?? this.sort
+      ..renew = renew ?? this.renew
+      ..content = content ?? this.content
+      ..monthPrice = monthPrice ?? this.monthPrice
+      ..quarterPrice = quarterPrice ?? this.quarterPrice
+      ..halfYearPrice = halfYearPrice ?? this.halfYearPrice
+      ..yearPrice = yearPrice ?? this.yearPrice
+      ..twoYearPrice = twoYearPrice ?? this.twoYearPrice
+      ..threeYearPrice = threeYearPrice ?? this.threeYearPrice
+      ..onetimePrice = onetimePrice ?? this.onetimePrice
+      ..resetPrice = resetPrice ?? this.resetPrice
+      ..resetTrafficMethod = resetTrafficMethod ?? this.resetTrafficMethod
+      ..inventoryLimit = inventoryLimit ?? this.inventoryLimit
+      ..capacityLimit = capacityLimit ?? this.capacityLimit
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

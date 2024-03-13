@@ -17,7 +17,7 @@ class SubScribeEntity {
 	late int transferEnable = 0;
 	late String email = '';
 	late String uuid = '';
-	late SubScribePlan plan;
+	late SubScribePlan plan = SubScribePlan();
 	@JSONField(name: "subscribe_url")
 	late String subscribeUrl = '';
 	@JSONField(name: "reset_day")

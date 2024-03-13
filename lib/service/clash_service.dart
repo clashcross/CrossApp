@@ -22,7 +22,6 @@ import 'package:yaml_writer/yaml_writer.dart';
 
 import '../bean/clash_config_entity.dart';
 import '../generated_bindings.dart';
-import '../http/options.dart';
 import '../main.dart';
 import '../tools/customlaunch.dart';
 import '../tools/request.dart';
@@ -46,7 +45,8 @@ class ClashService extends GetxService with TrayListener {
   final yamlConfigs = RxSet<FileSystemEntity>();
 
   // final currentYaml = isDesktop?'config.yaml'.obs:"".obs;
-  final currentYaml = 'config.yaml'.obs;
+  // final currentYaml = 'config.yaml'.obs;
+  final currentYaml = ("KuangBiaoYun".tr).obs;
 
   // final currentYaml = ''.obs;
   final proxyStatus = RxMap<String, int>();
@@ -62,7 +62,7 @@ class ClashService extends GetxService with TrayListener {
   static var initializedSockPort = 0;
   static var initializedMixedPort = 0;
   var customTestUrl =
-      SpUtil.getString('customTestUrl', defValue: "https://www.google.com")!;
+      SpUtil.getString('customTestUrl', defValue: "http://www.gstatic.com")!;
 
   // config
   Rx<ClashConfigEntity?> configEntity = Rx(null);
@@ -71,8 +71,13 @@ class ClashService extends GetxService with TrayListener {
   Stream<dynamic>? logStream;
   RxMap<String, dynamic> proxies = RxMap();
   RxBool isSystemProxyObs = RxBool(false);
+  RxBool isTested = RxBool(false);
   String app_version = '';
   String build_number = '';
+
+  setTested(v) {
+    isTested.value = v;
+  }
 
   ClashService() {
     // load lib
@@ -125,14 +130,12 @@ class ClashService extends GetxService with TrayListener {
     if (!mmdbF.existsSync()) {
       await mmdbF.writeAsBytes(mmdb.buffer.asInt8List());
     }
-    // if(isDesktop){
     final config = await rootBundle.load('assets/tp/clash/config.yaml');
     // write to clash dir
     final configF = File(clashConf);
     if (!configF.existsSync()) {
       await configF.writeAsBytes(config.buffer.asInt8List());
     }
-    // }
     // create or detect lock file
     await _acquireLock(_clashDirectory);
     // ffi
@@ -146,12 +149,12 @@ class ClashService extends GetxService with TrayListener {
     Future.delayed(Duration.zero, () {
       initDaemon();
     });
+    trayManager.addListener(this);
     // tray show issue
-    if (isDesktop) {
-      // Future.delayed(Duration(milliseconds: 500),(){});
-
-      trayManager.addListener(this);
-    }
+    // if (isDesktop) {
+    //   // Future.delayed(Duration(milliseconds: 500),(){});
+    //   trayManager.addListener(this);
+    // }
     getAppVersion();
     // wait getx initialize
     // Future.delayed(const Duration(seconds: 3), () {
@@ -181,8 +184,8 @@ class ClashService extends GetxService with TrayListener {
         Get.printInfo(info: 'detected: ${entity.path}');
       }
     }
-    yamlConfigs.removeWhere(
-        (element) => element.path.toLowerCase().endsWith("config.yaml"));
+    // yamlConfigs.removeWhere(
+    //     (element) => element.path.toLowerCase().endsWith("config.yaml"));
   }
 
   Map<String, dynamic> getConnections() {
@@ -254,10 +257,11 @@ class ClashService extends GetxService with TrayListener {
     // system proxy
     // listen port
     await reload();
-    // checkPort();
-    // if (isSystemProxy()) {
-    //   // setSystemProxy();
-    // }
+    checkPort();
+    if (isSystemProxy()) {
+      clearSystemProxy();
+      // setSystemProxy();
+    }
   }
 
   @override
@@ -270,10 +274,10 @@ class ClashService extends GetxService with TrayListener {
     Get.printInfo(info: 'fclash: closing daemon');
     // double check
     // stopClashSubP();
-    // if (isSystemProxy()) {
-    //   // just clear system proxy
-    //   await clearSystemProxy(permanent: false);
-    // }
+    if (isSystemProxy()) {
+      // just clear system proxy
+      await clearSystemProxy(permanent: false);
+    }
     await _clashLock?.unlock();
   }
 
@@ -328,13 +332,13 @@ class ClashService extends GetxService with TrayListener {
       SpUtil.putString('yaml', currentYaml.value);
       return resp.statusCode == 204;
     } else {
-      Future.delayed(Duration.zero, () {
-        Get.defaultDialog(
-            middleText: 'not a valid config file'.tr,
-            onConfirm: () {
-              Get.back();
-            });
-      });
+      // Future.delayed(Duration.zero, () {
+      //   Get.defaultDialog(
+      //       middleText: 'not a valid config file'.tr,
+      //       onConfirm: () {
+      //         Get.back();
+      //       });
+      // });
       config.delete();
       return false;
     }
@@ -361,18 +365,18 @@ class ClashService extends GetxService with TrayListener {
     return ret == 0;
   }
 
-  // bool changeConfigField(String field, dynamic value) {
-  //   try {
-  //     int ret = clashFFI.change_config_field(
-  //         json.encode(<String, dynamic>{field: value}).toNativeUtf8().cast());
-  //     return ret == 0;
-  //   } finally {
-  //     getCurrentClashConfig();
-  //     if (field.endsWith("port") && isSystemProxy()) {
-  //       setSystemProxy();
-  //     }
-  //   }
-  // }
+  bool changeConfigField(String field, dynamic value) {
+    try {
+      int ret = clashFFI.change_config_field(
+          json.encode(<String, dynamic>{field: value}).toNativeUtf8().cast());
+      return ret == 0;
+    } finally {
+      getCurrentClashConfig();
+      if (field.endsWith("port") && isSystemProxy()) {
+        setSystemProxy();
+      }
+    }
+  }
 
   changeCustomTestUrl(url) {
     url = addHttpPrefixIfNeeded(url);
@@ -381,175 +385,177 @@ class ClashService extends GetxService with TrayListener {
     reload();
   }
 
-  // bool isSystemProxy() {
-  //   return SpUtil.getBool('system_proxy', defValue: false)!;
-  // }
-  //
-  // Future<bool> setIsSystemProxy(bool proxy) {
-  //   isSystemProxyObs.value = proxy;
-  //   return SpUtil.putBool('system_proxy', proxy)!;
-  // }
+  bool isSystemProxy() {
+    return SpUtil.getBool('system_proxy', defValue: false)!;
+  }
 
-  // Future<void> setSystemProxy() async {
-  //   if (isDesktop) {
-  //     if (configEntity.value != null) {
-  //       final entity = configEntity.value!;
-  //       if (entity.port != 0) {
-  //         await Future.wait([
-  //           proxyManager.setAsSystemProxy(
-  //               ProxyTypes.http, '127.0.0.1', entity.port!),
-  //           proxyManager.setAsSystemProxy(
-  //               ProxyTypes.https, '127.0.0.1', entity.port!)
-  //         ]);
-  //         debugPrint("set http");
-  //       }
-  //       if (entity.socksPort != 0 && !Platform.isWindows) {
-  //         debugPrint("set socks");
-  //         await proxyManager.setAsSystemProxy(
-  //             ProxyTypes.socks, '127.0.0.1', entity.socksPort!);
-  //       }
-  //       await setIsSystemProxy(true);
-  //     }
-  //   } else {
-  //     if (configEntity.value != null) {
-  //       final entity = configEntity.value!;
-  //       if (entity.port != 0) {
-  //         await mobileChannel
-  //             .invokeMethod("SetHttpPort", {"port": entity.port});
-  //       }
-  //       mobileChannel.invokeMethod("StartProxy");
-  //       await setIsSystemProxy(true);
-  //     }
-  //
-  //     // await Clipboard.setData(
-  //     //     ClipboardData(text: "${configEntity.value?.port}"));
-  //     // final dialog = BrnDialog(
-  //     //   titleText: "请手动设置代理",
-  //     //   messageText:
-  //     //       "端口号已复制。请进入已连接WiFi的详情设置，将代理设置为手动，主机名填写127.0.0.1，端口填写${configEntity.value?.port}，然后返回点击已完成即可",
-  //     //   actionsText: ["取消", "已完成", "去设置填写"],
-  //     //   indexedActionCallback: (index) async {
-  //     //     if (index == 0) {
-  //     //       if (Get.isOverlaysOpen) {
-  //     //         Get.back();
-  //     //       }
-  //     //     } else if (index == 1) {
-  //     //       final proxy = await SystemProxy.getProxySettings();
-  //     //       if (proxy != null) {
-  //     //         if (proxy["host"] == "127.0.0.1" &&
-  //     //             int.parse(proxy["port"].toString()) ==
-  //     //                 configEntity.value?.port) {
-  //     //           Future.delayed(Duration.zero, () {
-  //     //             if (Get.overlayContext != null) {
-  //     //               BrnToast.show("设置成功", Get.overlayContext!);
-  //     //               setIsSystemProxy(true);
-  //     //             }
-  //     //           });
-  //     //           if (Get.isOverlaysOpen) {
-  //     //             Get.back();
-  //     //           }
-  //     //         }
-  //     //       } else {
-  //     //         Future.delayed(Duration.zero, () {
-  //     //           if (Get.overlayContext != null) {
-  //     //             BrnToast.show("好像未完成设置哦", Get.overlayContext!);
-  //     //           }
-  //     //         });
-  //     //       }
-  //     //     } else {
-  //     //       Future.delayed(Duration.zero, () {
-  //     //         BrnToast.show("端口号已复制", Get.context!);
-  //     //       });
-  //     //       await OpenSettings.openWIFISetting();
-  //     //     }
-  //     //   },
-  //     // );
-  //     // Get.dialog(dialog);
-  //   }
-  //   reload();
-  //
-  // }
-  //
-  // Future<void> clearSystemProxy({bool permanent = true}) async {
-  //   if (isDesktop) {
-  //     await proxyManager.cleanSystemProxy();
-  //     if (permanent) {
-  //       await setIsSystemProxy(false);
-  //     }
-  //   } else {
-  //     mobileChannel.invokeMethod("StopProxy");
-  //     await setIsSystemProxy(false);
-  //     // final dialog = BrnDialog(
-  //     //   titleText: "请手动设置代理",
-  //     //   messageText: "请进入已连接WiFi的详情设置，将代理设置为无",
-  //     //   actionsText: ["取消", "已完成", "去设置清除"],
-  //     //   indexedActionCallback: (index) async {
-  //     //     if (index == 0) {
-  //     //       if (Get.isOverlaysOpen) {
-  //     //         Get.back();
-  //     //       }
-  //     //     } else if (index == 1) {
-  //     //       final proxy = await SystemProxy.getProxySettings();
-  //     //       if (proxy != null) {
-  //     //         Future.delayed(Duration.zero, () {
-  //     //           if (Get.overlayContext != null) {
-  //     //             BrnToast.show("好像没有清除成功哦，当前代理${proxy}", Get.overlayContext!);
-  //     //           }
-  //     //         });
-  //     //       } else {
-  //     //         Future.delayed(Duration.zero, () {
-  //     //           if (Get.overlayContext != null) {
-  //     //             BrnToast.show("清除成功", Get.overlayContext!);
-  //     //           }
-  //     //           setIsSystemProxy(false);
-  //     //           if (Get.isOverlaysOpen) {
-  //     //             Get.back();
-  //     //           }
-  //     //         });
-  //     //       }
-  //     //     } else {
-  //     //       OpenSettings.openWIFISetting().then((_) async {
-  //     //         final proxy = await SystemProxy.getProxySettings();
-  //     //         debugPrint("$proxy");
-  //     //       });
-  //     //     }
-  //     //   },
-  //     // );
-  //     // Get.dialog(dialog);
-  //   }
-  //   reload();
-  // }
-  //
-  // Future<void> copySystemProxy() async {
-  //   String copyLinuxMac = "";
-  //   String copyWindows = "";
-  //   if (isDesktop) {
-  //     if (configEntity.value != null) {
-  //       final entity = configEntity.value!;
-  //       if (!Platform.isWindows) {
-  //         if (entity.socksPort != 0) {
-  //           copyLinuxMac =
-  //               "export all_proxy=socks:5//127.0.0.1:${entity.socksPort} ";
-  //         }
-  //         if (entity.port != 0) {
-  //           copyLinuxMac += "export http=http://127.0.0.1:${entity.port} ";
-  //           copyLinuxMac += "export https=https://127.0.0.1:${entity.port} ";
-  //         }
-  //         await Clipboard.setData(ClipboardData(text: copyLinuxMac));
-  //       } else {
-  //         if (entity.socksPort != 0) {
-  //           copyWindows =
-  //               "SET all_proxy=socks:5//127.0.0.1:${entity.socksPort} ";
-  //         }
-  //         if (entity.port != 0) {
-  //           copyWindows += "SET http=http://127.0.0.1:${entity.port} ";
-  //           copyWindows += "SET https=https://127.0.0.1:${entity.port} ";
-  //         }
-  //         await Clipboard.setData(ClipboardData(text: copyWindows));
-  //       }
-  //     }
-  //   } else {}
-  // }
+  Future<bool> setIsSystemProxy(bool proxy) {
+    isSystemProxyObs.value = proxy;
+    return SpUtil.putBool('system_proxy', proxy)!;
+  }
+
+  Future<void> setSystemProxy() async {
+    if (isDesktop) {
+      if (configEntity.value != null) {
+        final entity = configEntity.value!;
+        if (entity.port != 0) {
+          await Future.wait([
+            proxyManager.setAsSystemProxy(
+                ProxyTypes.http, '127.0.0.1', entity.port!),
+            proxyManager.setAsSystemProxy(
+                ProxyTypes.https, '127.0.0.1', entity.port!)
+          ]);
+          debugPrint("set http");
+        }
+        if (entity.socksPort != 0 && !Platform.isWindows) {
+          debugPrint("set socks");
+          await proxyManager.setAsSystemProxy(
+              ProxyTypes.socks, '127.0.0.1', entity.socksPort!);
+        }
+        await setIsSystemProxy(true);
+      }
+      reload();
+    } else {
+      if (configEntity.value != null) {
+        final entity = configEntity.value!;
+        if (entity.port != 0) {
+          await mobileChannel
+              .invokeMethod("SetHttpPort", {"port": entity.port});
+        }
+        mobileChannel.invokeMethod("StartProxy");
+        await setIsSystemProxy(true);
+      }
+      reload();
+
+      // await Clipboard.setData(
+      //     ClipboardData(text: "${configEntity.value?.port}"));
+      // final dialog = BrnDialog(
+      //   titleText: "请手动设置代理",
+      //   messageText:
+      //       "端口号已复制。请进入已连接WiFi的详情设置，将代理设置为手动，主机名填写127.0.0.1，端口填写${configEntity.value?.port}，然后返回点击已完成即可",
+      //   actionsText: ["取消", "已完成", "去设置填写"],
+      //   indexedActionCallback: (index) async {
+      //     if (index == 0) {
+      //       if (Get.isOverlaysOpen) {
+      //         Get.back();
+      //       }
+      //     } else if (index == 1) {
+      //       final proxy = await SystemProxy.getProxySettings();
+      //       if (proxy != null) {
+      //         if (proxy["host"] == "127.0.0.1" &&
+      //             int.parse(proxy["port"].toString()) ==
+      //                 configEntity.value?.port) {
+      //           Future.delayed(Duration.zero, () {
+      //             if (Get.overlayContext != null) {
+      //               BrnToast.show("设置成功", Get.overlayContext!);
+      //               setIsSystemProxy(true);
+      //             }
+      //           });
+      //           if (Get.isOverlaysOpen) {
+      //             Get.back();
+      //           }
+      //         }
+      //       } else {
+      //         Future.delayed(Duration.zero, () {
+      //           if (Get.overlayContext != null) {
+      //             BrnToast.show("好像未完成设置哦", Get.overlayContext!);
+      //           }
+      //         });
+      //       }
+      //     } else {
+      //       Future.delayed(Duration.zero, () {
+      //         BrnToast.show("端口号已复制", Get.context!);
+      //       });
+      //       await OpenSettings.openWIFISetting();
+      //     }
+      //   },
+      // );
+      // Get.dialog(dialog);
+    }
+  }
+
+  Future<void> clearSystemProxy({bool permanent = true}) async {
+    if (isDesktop) {
+      await proxyManager.cleanSystemProxy();
+      if (permanent) {
+        await setIsSystemProxy(false);
+      }
+      reload();
+    } else {
+      mobileChannel.invokeMethod("StopProxy");
+      await setIsSystemProxy(false);
+      reload();
+      // final dialog = BrnDialog(
+      //   titleText: "请手动设置代理",
+      //   messageText: "请进入已连接WiFi的详情设置，将代理设置为无",
+      //   actionsText: ["取消", "已完成", "去设置清除"],
+      //   indexedActionCallback: (index) async {
+      //     if (index == 0) {
+      //       if (Get.isOverlaysOpen) {
+      //         Get.back();
+      //       }
+      //     } else if (index == 1) {
+      //       final proxy = await SystemProxy.getProxySettings();
+      //       if (proxy != null) {
+      //         Future.delayed(Duration.zero, () {
+      //           if (Get.overlayContext != null) {
+      //             BrnToast.show("好像没有清除成功哦，当前代理${proxy}", Get.overlayContext!);
+      //           }
+      //         });
+      //       } else {
+      //         Future.delayed(Duration.zero, () {
+      //           if (Get.overlayContext != null) {
+      //             BrnToast.show("清除成功", Get.overlayContext!);
+      //           }
+      //           setIsSystemProxy(false);
+      //           if (Get.isOverlaysOpen) {
+      //             Get.back();
+      //           }
+      //         });
+      //       }
+      //     } else {
+      //       OpenSettings.openWIFISetting().then((_) async {
+      //         final proxy = await SystemProxy.getProxySettings();
+      //         debugPrint("$proxy");
+      //       });
+      //     }
+      //   },
+      // );
+      // Get.dialog(dialog);
+    }
+  }
+
+  Future<void> copySystemProxy() async {
+    String copyLinuxMac = "";
+    String copyWindows = "";
+    if (isDesktop) {
+      if (configEntity.value != null) {
+        final entity = configEntity.value!;
+        if (!Platform.isWindows) {
+          if (entity.socksPort != 0) {
+            copyLinuxMac =
+                "export all_proxy=socks:5//127.0.0.1:${entity.socksPort} ";
+          }
+          if (entity.port != 0) {
+            copyLinuxMac += "export http=http://127.0.0.1:${entity.port} ";
+            copyLinuxMac += "export https=https://127.0.0.1:${entity.port} ";
+          }
+          await Clipboard.setData(ClipboardData(text: copyLinuxMac));
+        } else {
+          if (entity.socksPort != 0) {
+            copyWindows =
+                "SET all_proxy=socks:5//127.0.0.1:${entity.socksPort} ";
+          }
+          if (entity.port != 0) {
+            copyWindows += "SET http=http://127.0.0.1:${entity.port} ";
+            copyWindows += "SET https=https://127.0.0.1:${entity.port} ";
+          }
+          await Clipboard.setData(ClipboardData(text: copyWindows));
+        }
+      }
+      updateTray();
+    } else {}
+  }
 
   Future<void> updateTray() async {
     if (!isDesktop) {
@@ -582,31 +588,30 @@ class ClashService extends GetxService with TrayListener {
     }
     // system proxy
     stringList.add(MenuItem.separator());
-    // if (!isSystemProxy()) {
-    //   stringList
-    //       .add(MenuItem(label: "Not system proxy yet.".tr, disabled: true));
-    //   stringList.add(MenuItem(
-    //       label: "复制终端代理命令".tr, toolTip: "复制代理命令到终端运行".tr, disabled: true));
-    //   stringList.add(MenuItem(
-    //       label: "Set as system proxy".tr,
-    //       toolTip: "click to set as system proxy".tr,
-    //       key: ACTION_SET_SYSTEM_PROXY));
-    // } else {
-    //   stringList.add(MenuItem(label: "System proxy now.".tr, disabled: true));
-    //   stringList.add(MenuItem(
-    //       label: "Unset system proxy".tr,
-    //       toolTip: "click to reset system proxy".tr,
-    //       key: ACTION_UNSET_SYSTEM_PROXY));
-    //   stringList.add(MenuItem(
-    //       label: "Copy terminal proxy command".tr,
-    //       toolTip: "Copy the proxy command and run it in the terminal".tr,
-    //       key: ACTION_CPOY_SYSTEM_PROXY));
-    //   stringList.add(MenuItem.separator());
-    // }
-    if(isDesktop){
+    if (!isSystemProxy()) {
+      stringList
+          .add(MenuItem(label: "Not system proxy yet.".tr, disabled: true));
+      stringList.add(MenuItem(
+          label: "复制终端代理命令".tr, toolTip: "复制代理命令到终端运行".tr, disabled: true));
+      stringList.add(MenuItem(
+          label: "Set as system proxy".tr,
+          toolTip: "click to set as system proxy".tr,
+          key: ACTION_SET_SYSTEM_PROXY));
+    } else {
+      stringList.add(MenuItem(label: "System proxy now.".tr, disabled: true));
+      stringList.add(MenuItem(
+          label: "Unset system proxy".tr,
+          toolTip: "click to reset system proxy".tr,
+          key: ACTION_UNSET_SYSTEM_PROXY));
+      stringList.add(MenuItem(
+          label: "Copy terminal proxy command".tr,
+          toolTip: "Copy the proxy command and run it in the terminal".tr,
+          key: ACTION_CPOY_SYSTEM_PROXY));
+      stringList.add(MenuItem.separator());
+    }
+    if (isDesktop) {
       initAppTray(details: stringList, isUpdate: true);
     }
-
     if (SpUtil.getBool("system_proxy", defValue: false)!) {
       await trayManager.setIcon(Platform.isWindows
           ? 'assets/images/rocket_connected.ico'
@@ -618,27 +623,26 @@ class ClashService extends GetxService with TrayListener {
   void onTrayMenuItemClick(MenuItem menuItem) {
     switch (menuItem.key) {
       case ACTION_SET_SYSTEM_PROXY:
-        // setSystemProxy().then((value) {
-        //   // reload();
-        //   updateTray();
-        // });
+        setSystemProxy().then((value) {
+          // reload();
+          updateTray();
+        });
         break;
       case ACTION_UNSET_SYSTEM_PROXY:
-        // clearSystemProxy().then((_) {
-        //   updateTray();
-        //   // reload();
-        // });
+        clearSystemProxy().then((_) {
+          updateTray();
+          // reload();
+        });
         break;
       case ACTION_CPOY_SYSTEM_PROXY:
-        // copySystemProxy();
+        copySystemProxy();
         break;
       case 'show':
         windowManager.show();
         break;
       case 'exit':
         windowManager.close();
-        exit(0);
-        // clearSystemProxy().then((value) => exit(0));
+        clearSystemProxy().then((value) => exit(0));
     }
   }
 
@@ -650,29 +654,32 @@ class ClashService extends GetxService with TrayListener {
       if (uri == null) {
         return false;
       }
+      EasyLoading.showInfo("初始化配置中，请耐心等待");
       final resp = await Dio(BaseOptions(
-              headers: {'User-Agent': 'ClashCross'},
-              sendTimeout: const Duration(seconds: 30),
-              receiveTimeout: const Duration(seconds: 30),))
-          .downloadUri(uri, newProfilePath, onReceiveProgress: (i, t) {
+        headers: {'User-Agent': 'clash'},
+        sendTimeout: const Duration(seconds: 300),
+        receiveTimeout: const Duration(seconds: 300),
+      )).downloadUri(uri, newProfilePath, onReceiveProgress: (i, t) {
         Get.printInfo(info: "$i$t");
-      }).catchError((e) {
-        // EasyLoading.showError('Error: $e');
-      });
+      }).catchError((e) {});
+      EasyLoading.showSuccess("配置更新成功！");
       return resp.statusCode == 200;
     } catch (e) {
+      EasyLoading.showError("配置更新失败,请关闭应用重新进入");
       // print(e);
       // EasyLoading.showError('Error: $e');
     } finally {
       final f = File(newProfilePath);
       if (f.existsSync() && await changeYaml(f)) {
         await SpUtil.putString('profile_$name', url);
-        // EasyLoading.showSuccess("配置更新成功！");
-        return true;
+        //
+        // EasyLoading.dismiss();
+        // return true;
       }
-      EasyLoading.showError("配置更新失败");
-      return false;
+
+      EasyLoading.dismiss();
     }
+    return false;
   }
 
   Future<bool> deleteProfile(FileSystemEntity config) async {
@@ -686,20 +693,20 @@ class ClashService extends GetxService with TrayListener {
     }
   }
 
-  // void checkPort() {
-  //   if (configEntity.value != null) {
-  //     if (configEntity.value!.port == 0) {
-  //       changeConfigField('port', initializedHttpPort);
-  //     }
-  //     if (configEntity.value!.mixedPort == 0) {
-  //       changeConfigField('mixed-port', initializedMixedPort);
-  //     }
-  //     if (configEntity.value!.socksPort == 0) {
-  //       changeConfigField('socks-port', initializedSockPort);
-  //     }
-  //     // updateTray();
-  //   }
-  // }
+  void checkPort() {
+    if (configEntity.value != null) {
+      if (configEntity.value!.port == 0) {
+        changeConfigField('port', initializedHttpPort);
+      }
+      if (configEntity.value!.mixedPort == 0) {
+        changeConfigField('mixed-port', initializedMixedPort);
+      }
+      if (configEntity.value!.socksPort == 0) {
+        changeConfigField('socks-port', initializedSockPort);
+      }
+      // updateTray();
+    }
+  }
 
   Future<int> delay(String proxyName, {int timeout = 5000}) async {
     try {
@@ -774,10 +781,10 @@ class ClashService extends GetxService with TrayListener {
       final tmpF = File('$newProfilePath.tmp');
 
       final resp = await Dio(BaseOptions(
-              headers: {'User-Agent': 'ClashCross'},
-              sendTimeout: const Duration(seconds: 30),
-              receiveTimeout: const Duration(seconds: 30),))
-          .downloadUri(uri, tmpF.path, onReceiveProgress: (i, t) {
+        headers: {'User-Agent': 'clash'},
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      )).downloadUri(uri, tmpF.path, onReceiveProgress: (i, t) {
         Get.printInfo(info: "$i/$t");
       }).catchError((e) {
         if (tmpF.existsSync()) {
@@ -834,10 +841,10 @@ class ClashService extends GetxService with TrayListener {
       _clashLock = await lockFile.open(mode: FileMode.write);
       await _clashLock?.lock();
     } catch (e) {
-      // if (!Platform.isWindows) {
-      //   await Get.find<NotificationService>()
-      //       .showNotification(HttpOptions.appName, "Already running, Now exit.".tr);
-      // }
+      if (!Platform.isWindows) {
+        await Get.find<NotificationService>().showNotification(
+            "KuangBiaoYun".tr, "Already running, Now exit.".tr);
+      }
       exit(0);
     }
   }

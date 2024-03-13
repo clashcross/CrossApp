@@ -52,3 +52,26 @@ Map<String, dynamic> $CorpusEntityToJson(CorpusEntity entity) {
   data['updated_at'] = entity.updatedAt;
   return data;
 }
+
+extension CorpusEntityExtension on CorpusEntity {
+  CorpusEntity copyWith({
+    int? id,
+    String? siteurl,
+    String? sitename,
+    dynamic description,
+    int? isRecommend,
+    int? views,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return CorpusEntity()
+      ..id = id ?? this.id
+      ..siteurl = siteurl ?? this.siteurl
+      ..sitename = sitename ?? this.sitename
+      ..description = description ?? this.description
+      ..isRecommend = isRecommend ?? this.isRecommend
+      ..views = views ?? this.views
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
+}

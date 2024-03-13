@@ -1,7 +1,5 @@
-
-
-import '../../bean/user_comm_config_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/user_comm_config_entity.dart';
 
 UserCommConfigEntity $UserCommConfigEntityFromJson(Map<String, dynamic> json) {
   final UserCommConfigEntity userCommConfigEntity = UserCommConfigEntity();
@@ -19,7 +17,7 @@ UserCommConfigEntity $UserCommConfigEntityFromJson(Map<String, dynamic> json) {
     userCommConfigEntity.stripePk = stripePk;
   }
   final List<String>? withdrawMethods = (json['withdraw_methods'] as List<
-      dynamic>).map(
+      dynamic>?)?.map(
           (e) => jsonConvert.convert<String>(e) as String).toList();
   if (withdrawMethods != null) {
     userCommConfigEntity.withdrawMethods = withdrawMethods;
@@ -72,4 +70,37 @@ Map<String, dynamic> $UserCommConfigEntityToJson(UserCommConfigEntity entity) {
   data['commission_distribution_l2'] = entity.commissionDistributionL2;
   data['commission_distribution_l3'] = entity.commissionDistributionL3;
   return data;
+}
+
+extension UserCommConfigEntityExtension on UserCommConfigEntity {
+  UserCommConfigEntity copyWith({
+    int? isTelegram,
+    String? telegramDiscussLink,
+    dynamic stripePk,
+    List<String>? withdrawMethods,
+    int? withdrawClose,
+    String? currency,
+    String? currencySymbol,
+    int? commissionDistributionEnable,
+    dynamic commissionDistributionL1,
+    dynamic commissionDistributionL2,
+    dynamic commissionDistributionL3,
+  }) {
+    return UserCommConfigEntity()
+      ..isTelegram = isTelegram ?? this.isTelegram
+      ..telegramDiscussLink = telegramDiscussLink ?? this.telegramDiscussLink
+      ..stripePk = stripePk ?? this.stripePk
+      ..withdrawMethods = withdrawMethods ?? this.withdrawMethods
+      ..withdrawClose = withdrawClose ?? this.withdrawClose
+      ..currency = currency ?? this.currency
+      ..currencySymbol = currencySymbol ?? this.currencySymbol
+      ..commissionDistributionEnable = commissionDistributionEnable ??
+          this.commissionDistributionEnable
+      ..commissionDistributionL1 = commissionDistributionL1 ??
+          this.commissionDistributionL1
+      ..commissionDistributionL2 = commissionDistributionL2 ??
+          this.commissionDistributionL2
+      ..commissionDistributionL3 = commissionDistributionL3 ??
+          this.commissionDistributionL3;
+  }
 }

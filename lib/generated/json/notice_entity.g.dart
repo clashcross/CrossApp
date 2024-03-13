@@ -1,7 +1,5 @@
-
-
-import '../../bean/notice_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/notice_entity.dart';
 
 NoticeEntity $NoticeEntityFromJson(Map<String, dynamic> json) {
   final NoticeEntity noticeEntity = NoticeEntity();
@@ -51,4 +49,27 @@ Map<String, dynamic> $NoticeEntityToJson(NoticeEntity entity) {
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension NoticeEntityExtension on NoticeEntity {
+  NoticeEntity copyWith({
+    int? id,
+    String? title,
+    String? content,
+    int? xShow,
+    dynamic imgUrl,
+    dynamic tags,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return NoticeEntity()
+      ..id = id ?? this.id
+      ..title = title ?? this.title
+      ..content = content ?? this.content
+      ..xShow = xShow ?? this.xShow
+      ..imgUrl = imgUrl ?? this.imgUrl
+      ..tags = tags ?? this.tags
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

@@ -69,3 +69,32 @@ Map<String, dynamic> $ClashConfigEntityToJson(ClashConfigEntity entity) {
   data['ipv6'] = entity.ipv6;
   return data;
 }
+
+extension ClashConfigEntityExtension on ClashConfigEntity {
+  ClashConfigEntity copyWith({
+    int? port,
+    int? socksPort,
+    int? redirPort,
+    int? tproxyPort,
+    int? mixedPort,
+    List<dynamic>? authentication,
+    bool? allowLan,
+    String? bindAddress,
+    String? mode,
+    String? logLevel,
+    bool? ipv6,
+  }) {
+    return ClashConfigEntity()
+      ..port = port ?? this.port
+      ..socksPort = socksPort ?? this.socksPort
+      ..redirPort = redirPort ?? this.redirPort
+      ..tproxyPort = tproxyPort ?? this.tproxyPort
+      ..mixedPort = mixedPort ?? this.mixedPort
+      ..authentication = authentication ?? this.authentication
+      ..allowLan = allowLan ?? this.allowLan
+      ..bindAddress = bindAddress ?? this.bindAddress
+      ..mode = mode ?? this.mode
+      ..logLevel = logLevel ?? this.logLevel
+      ..ipv6 = ipv6 ?? this.ipv6;
+  }
+}

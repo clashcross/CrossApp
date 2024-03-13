@@ -1,7 +1,5 @@
-
-
-import '../../bean/server_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/server_entity.dart';
 
 ServerEntity $ServerEntityFromJson(Map<String, dynamic> json) {
   final ServerEntity serverEntity = ServerEntity();
@@ -9,7 +7,7 @@ ServerEntity $ServerEntityFromJson(Map<String, dynamic> json) {
   if (id != null) {
     serverEntity.id = id;
   }
-  final List<String>? groupId = (json['group_id'] as List<dynamic>).map(
+  final List<String>? groupId = (json['group_id'] as List<dynamic>?)?.map(
           (e) => jsonConvert.convert<String>(e) as String).toList();
   if (groupId != null) {
     serverEntity.groupId = groupId;
@@ -22,7 +20,7 @@ ServerEntity $ServerEntityFromJson(Map<String, dynamic> json) {
   if (parentId != null) {
     serverEntity.parentId = parentId;
   }
-  final List<String>? tags = (json['tags'] as List<dynamic>).map(
+  final List<String>? tags = (json['tags'] as List<dynamic>?)?.map(
           (e) => jsonConvert.convert<String>(e) as String).toList();
   if (tags != null) {
     serverEntity.tags = tags;
@@ -114,4 +112,51 @@ Map<String, dynamic> $ServerEntityToJson(ServerEntity entity) {
   data['is_online'] = entity.isOnline;
   data['cache_key'] = entity.cacheKey;
   return data;
+}
+
+extension ServerEntityExtension on ServerEntity {
+  ServerEntity copyWith({
+    int? id,
+    List<String>? groupId,
+    dynamic routeId,
+    dynamic parentId,
+    List<String>? tags,
+    String? name,
+    String? rate,
+    String? host,
+    int? port,
+    int? serverPort,
+    int? allowInsecure,
+    dynamic serverName,
+    int? xShow,
+    int? sort,
+    int? createdAt,
+    int? updatedAt,
+    String? type,
+    String? lastCheckAt,
+    int? isOnline,
+    String? cacheKey,
+  }) {
+    return ServerEntity()
+      ..id = id ?? this.id
+      ..groupId = groupId ?? this.groupId
+      ..routeId = routeId ?? this.routeId
+      ..parentId = parentId ?? this.parentId
+      ..tags = tags ?? this.tags
+      ..name = name ?? this.name
+      ..rate = rate ?? this.rate
+      ..host = host ?? this.host
+      ..port = port ?? this.port
+      ..serverPort = serverPort ?? this.serverPort
+      ..allowInsecure = allowInsecure ?? this.allowInsecure
+      ..serverName = serverName ?? this.serverName
+      ..xShow = xShow ?? this.xShow
+      ..sort = sort ?? this.sort
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt
+      ..type = type ?? this.type
+      ..lastCheckAt = lastCheckAt ?? this.lastCheckAt
+      ..isOnline = isOnline ?? this.isOnline
+      ..cacheKey = cacheKey ?? this.cacheKey;
+  }
 }

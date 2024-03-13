@@ -1,22 +1,22 @@
-
-
-import '../../bean/invite_fetch_entity_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/invite_fetch_entity_entity.dart';
 
 InviteFetchEntityEntity $InviteFetchEntityEntityFromJson(
     Map<String, dynamic> json) {
   final InviteFetchEntityEntity inviteFetchEntityEntity = InviteFetchEntityEntity();
-  final List<InviteFetchEntityCodes> codes = (json['codes'] as List<dynamic>)
-      .map(
+  final List<InviteFetchEntityCodes>? codes = (json['codes'] as List<dynamic>?)
+      ?.map(
           (e) =>
       jsonConvert.convert<InviteFetchEntityCodes>(e) as InviteFetchEntityCodes)
       .toList();
   if (codes != null) {
     inviteFetchEntityEntity.codes = codes;
   }
-  final List<int> stat = (json['stat'] as List<dynamic>).map(
+  final List<int>? stat = (json['stat'] as List<dynamic>?)?.map(
           (e) => jsonConvert.convert<int>(e) as int).toList();
-  inviteFetchEntityEntity.stat = stat;
+  if (stat != null) {
+    inviteFetchEntityEntity.stat = stat;
+  }
   return inviteFetchEntityEntity;
 }
 
@@ -26,6 +26,17 @@ Map<String, dynamic> $InviteFetchEntityEntityToJson(
   data['codes'] = entity.codes.map((v) => v.toJson()).toList();
   data['stat'] = entity.stat;
   return data;
+}
+
+extension InviteFetchEntityEntityExtension on InviteFetchEntityEntity {
+  InviteFetchEntityEntity copyWith({
+    List<InviteFetchEntityCodes>? codes,
+    List<int>? stat,
+  }) {
+    return InviteFetchEntityEntity()
+      ..codes = codes ?? this.codes
+      ..stat = stat ?? this.stat;
+  }
 }
 
 InviteFetchEntityCodes $InviteFetchEntityCodesFromJson(
@@ -73,4 +84,25 @@ Map<String, dynamic> $InviteFetchEntityCodesToJson(
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension InviteFetchEntityCodesExtension on InviteFetchEntityCodes {
+  InviteFetchEntityCodes copyWith({
+    int? id,
+    int? userId,
+    String? code,
+    int? status,
+    int? pv,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return InviteFetchEntityCodes()
+      ..id = id ?? this.id
+      ..userId = userId ?? this.userId
+      ..code = code ?? this.code
+      ..status = status ?? this.status
+      ..pv = pv ?? this.pv
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

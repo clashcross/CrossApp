@@ -8,6 +8,7 @@ import '../../service/clash_service.dart';
 import '../../service/v2board_service.dart';
 import '../../tools/customlaunch.dart';
 import '../plans/plans.dart';
+import '../plans/plans_page.dart';
 import 'invitation_page.dart';
 import 'knowledge_page.dart';
 import 'notices_page.dart';
@@ -41,8 +42,7 @@ class _SettingState extends State<UserCenter> {
               style: textStyle,
             ),
             onPressed: (cxt) {
-              Get.to(const Plans());
-              vs.setShowBackButton(true);
+              Get.to(const PlansPage());
             },
           ),
           SettingsTile.navigation(
@@ -55,17 +55,15 @@ class _SettingState extends State<UserCenter> {
             },
           ),
 
-          SettingsTile.navigation(
-            title: Text(
-              "Knowledge".tr,
-              style: textStyle,
-            ),
-            onPressed: (cxt) async {
-              // Get.to(const KnowledgePage());
-              var url = await vs.quickUrl("knowledge");
-              customLaunch(Uri.parse(url));
-            },
-          ),
+          // SettingsTile.navigation(
+          //   title: Text(
+          //     "Knowledge".tr,
+          //     style: textStyle,
+          //   ),
+          //   onPressed: (cxt) {
+          //     Get.to(const KnowledgePage());
+          //   },
+          // ),
 
           // SettingsTile.navigation(
           //   title: Text(
@@ -240,35 +238,35 @@ class _SettingState extends State<UserCenter> {
           //   ),
           //   onPressed: (cxt) {},
           // ),
-          SettingsTile.navigation(
-            title: Text(
-              "announcements".tr,
-              style: textStyle,
-            ),
-            onPressed: (cxt) {
-              Get.to(const NoticesPage());
-            },
-          ),
-
-          SettingsTile.navigation(
-            title: Text(
-              "My Tickets".tr,
-              style: textStyle,
-            ),
-            onPressed: (cxt) async {
-              var url = await vs.quickUrl("ticket");
-              customLaunch(Uri.parse(url));
-            },
-          ),
           // SettingsTile.navigation(
           //   title: Text(
-          //     "Set Mtproto".tr,
+          //     "announcements".tr,
           //     style: textStyle,
           //   ),
           //   onPressed: (cxt) {
-          //     customLaunch(Uri.parse("tg://socks?server=127.0.0.1&port=${Get.find<ClashService>().configEntity.value!.socksPort}"));
+          //     Get.to(const NoticesPage());
           //   },
           // ),
+
+          // SettingsTile.navigation(
+          //   title: Text(
+          //     "My Tickets".tr,
+          //     style: textStyle,
+          //   ),
+          //   onPressed: (cxt) async {
+          //     var url = await vs.quickUrl("ticket");
+          //     customLaunch(Uri.parse(url));
+          //   },
+          // ),
+          SettingsTile.navigation(
+            title: Text(
+              "Set Mtproto".tr,
+              style: textStyle,
+            ),
+            onPressed: (cxt) {
+              customLaunch(Uri.parse("tg://socks?server=127.0.0.1&port=${Get.find<ClashService>().configEntity.value!.socksPort}"));
+            },
+          ),
           SettingsTile.navigation(
             title: Text(
               "Setting".tr,

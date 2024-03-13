@@ -22,3 +22,14 @@ Map<String, dynamic> $ClashLogEntityToJson(ClashLogEntity entity) {
   data['payload'] = entity.payload;
   return data;
 }
+
+extension ClashLogEntityExtension on ClashLogEntity {
+  ClashLogEntity copyWith({
+    String? type,
+    String? payload,
+  }) {
+    return ClashLogEntity()
+      ..type = type ?? this.type
+      ..payload = payload ?? this.payload;
+  }
+}

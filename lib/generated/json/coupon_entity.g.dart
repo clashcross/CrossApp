@@ -1,7 +1,6 @@
-
-
 import '../../bean/coupon_entity.dart';
 import 'base/json_convert_content.dart';
+// import '../../bean/coupon_entity.dart';
 
 CouponEntity $CouponEntityFromJson(Map<String, dynamic> json) {
   final CouponEntity couponEntity = CouponEntity();
@@ -82,4 +81,39 @@ Map<String, dynamic> $CouponEntityToJson(CouponEntity entity) {
   data['created_at'] = entity.createdAt;
   data['updated_at'] = entity.updatedAt;
   return data;
+}
+
+extension CouponEntityExtension on CouponEntity {
+  CouponEntity copyWith({
+    int? id,
+    String? code,
+    String? name,
+    int? type,
+    int? value,
+    int? xShow,
+    dynamic limitUse,
+    int? limitUseWithUser,
+    dynamic limitPlanIds,
+    dynamic limitPeriod,
+    int? startedAt,
+    int? endedAt,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return CouponEntity()
+      ..id = id ?? this.id
+      ..code = code ?? this.code
+      ..name = name ?? this.name
+      ..type = type ?? this.type
+      ..value = value ?? this.value
+      ..xShow = xShow ?? this.xShow
+      ..limitUse = limitUse ?? this.limitUse
+      ..limitUseWithUser = limitUseWithUser ?? this.limitUseWithUser
+      ..limitPlanIds = limitPlanIds ?? this.limitPlanIds
+      ..limitPeriod = limitPeriod ?? this.limitPeriod
+      ..startedAt = startedAt ?? this.startedAt
+      ..endedAt = endedAt ?? this.endedAt
+      ..createdAt = createdAt ?? this.createdAt
+      ..updatedAt = updatedAt ?? this.updatedAt;
+  }
 }

@@ -1,7 +1,5 @@
-
-
-import '../../bean/guest_comm_config_entity.dart';
 import 'base/json_convert_content.dart';
+import '../../bean/guest_comm_config_entity.dart';
 
 GuestCommConfigEntity $GuestCommConfigEntityFromJson(
     Map<String, dynamic> json) {
@@ -61,4 +59,29 @@ Map<String, dynamic> $GuestCommConfigEntityToJson(
   data['app_url'] = entity.appUrl;
   data['logo'] = entity.logo;
   return data;
+}
+
+extension GuestCommConfigEntityExtension on GuestCommConfigEntity {
+  GuestCommConfigEntity copyWith({
+    dynamic tosUrl,
+    int? isEmailVerify,
+    int? isInviteForce,
+    int? emailWhitelistSuffix,
+    int? isRecaptcha,
+    String? recaptchaSiteKey,
+    String? appDescription,
+    String? appUrl,
+    dynamic logo,
+  }) {
+    return GuestCommConfigEntity()
+      ..tosUrl = tosUrl ?? this.tosUrl
+      ..isEmailVerify = isEmailVerify ?? this.isEmailVerify
+      ..isInviteForce = isInviteForce ?? this.isInviteForce
+      ..emailWhitelistSuffix = emailWhitelistSuffix ?? this.emailWhitelistSuffix
+      ..isRecaptcha = isRecaptcha ?? this.isRecaptcha
+      ..recaptchaSiteKey = recaptchaSiteKey ?? this.recaptchaSiteKey
+      ..appDescription = appDescription ?? this.appDescription
+      ..appUrl = appUrl ?? this.appUrl
+      ..logo = logo ?? this.logo;
+  }
 }

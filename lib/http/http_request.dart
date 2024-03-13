@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get_utils/get_utils.dart';
+import 'package:get/get.dart' as Cusget;
 
 //辅助配置
+import '../service/v2board_service.dart';
 import 'options.dart';
 import 'interceptor.dart';
 
@@ -14,15 +15,17 @@ class HttpRequest {
   factory HttpRequest() => _instance;
 
   static late final Dio dio;
+  final vs = Cusget.Get.find<V2boardService>();
 
   /// 内部构造方法
   HttpRequest._internal() {
     /// 初始化dio
     BaseOptions options = BaseOptions(
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        sendTimeout: const Duration(seconds: 30),
-        baseUrl: "${HttpOptions.websiteurl}api/v1/");
+        connectTimeout: const Duration(seconds: 300),
+        receiveTimeout: const Duration(seconds: 300),
+        sendTimeout: const Duration(seconds: 300),
+        // baseUrl: HttpOptions.v2boardapi);
+        baseUrl: vs.siteUrl.value.apiurl!);
     AnimatedIcons.menu_close;
 
     dio = Dio(options);
@@ -66,7 +69,8 @@ class HttpRequest {
     try {
       if (showLoading) {
         Future.delayed(const Duration(milliseconds: 100), () {
-          EasyLoading.showToast('load......'.tr, dismissOnTap: true,duration: const Duration(seconds: 1));
+          EasyLoading.showToast('load......'.tr,
+              dismissOnTap: true, duration: const Duration(seconds: 1));
         });
       }
       Response response = await HttpRequest.dio.request(
@@ -87,7 +91,7 @@ class HttpRequest {
     on DioError catch (error) {
       HttpException httpException = HttpException.create(error);
       if (showErrorMessage) {
-        EasyLoading.showToast(httpException.msg,dismissOnTap: true);
+        EasyLoading.showToast(httpException.msg, dismissOnTap: true);
       }
     } finally {
       // if (showLoading) {

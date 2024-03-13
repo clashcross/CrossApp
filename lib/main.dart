@@ -11,16 +11,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:proxy_manager/proxy_manager.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:url_protocol/url_protocol.dart';
 import 'package:window_manager/window_manager.dart';
 import 'http/options.dart';
 import 'model/appTheme.dart';
 import 'screen/component/desk_options.dart';
 import 'screen/introduction_animation/introduction_animation_screen.dart';
+import 'screen/loginpages/pages/signup.dart';
 import 'screen/page/homePage.dart';
 import 'screen/page/notices_page.dart';
 import 'screen/page/setting.dart';
@@ -79,7 +80,7 @@ Future<void> initAppTray(
 }
 
 Future<void> initAppService() async {
-  // await Get.putAsync(() => NotificationService().init());
+  await Get.putAsync(() => NotificationService().init());
   await Get.putAsync(() => ClashService().init());
   await Get.putAsync(() => DialogService().init());
   await Get.putAsync(() => V2boardService().init());
@@ -91,20 +92,19 @@ Future<void> initAppService() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await SpUtil.getInstance();
   // 隐藏状态栏
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
     statusBarBrightness:
-    !kIsWeb && Platform.isAndroid ? Brightness.dark : Brightness.light,
+        !kIsWeb && Platform.isAndroid ? Brightness.dark : Brightness.light,
     systemNavigationBarColor: Colors.white,
     systemNavigationBarDividerColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
 
-  // _registerWindowsProtocol();
+  _registerWindowsProtocol();
   if (isDesktop) {
     await Future.wait([
       Future.microtask(() async {
@@ -123,9 +123,7 @@ void main() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(
-      (Platform.isAndroid || Platform.isMacOS || Platform.isIOS)
-          ? const MyApp()
-          : const MyAppNoFirebase(),
+      const MyAppNoFirebase(),
       // MultiProvider(
       //   providers: [
       //     ChangeNotifierProvider<ThemeCollection>.value(
@@ -139,55 +137,6 @@ void main() async {
   });
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  @override
-  void initState() {
-    // if (!Platform.isLinux) {
-    //   initDeepLinks();
-    // }
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final locale = SpUtil.getString('lan', defValue: '')!;
-    Locale? storedLocale;
-    if (locale.isNotEmpty) {
-      final tuple = locale.split('_');
-      storedLocale = Locale(tuple[0], tuple[1]);
-    }
-    bool isDark = SpUtil.getBool("is_dark",defValue: false)!;
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      translations: ClashTranslations(),
-      locale: storedLocale ?? Get.deviceLocale,
-      supportedLocales: const [Locale("zh", "CN"), Locale("en", "US")],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light ,
-      theme: AppTheme.theme(),
-      darkTheme: AppTheme.darkTheme(),
-      home: const MyHomePage(),
-      // home: Obx(()=>vs.isLogin.value
-      //     ? const MyHomePage()
-      //     : const IntroductionAnimationScreen(),),
-      builder: EasyLoading.init(),
-    );
-  }
-}
-
 class MyAppNoFirebase extends StatefulWidget {
   const MyAppNoFirebase({super.key});
 
@@ -198,9 +147,9 @@ class MyAppNoFirebase extends StatefulWidget {
 class _MyAppNoFirebaseState extends State<MyAppNoFirebase> {
   @override
   void initState() {
-    // if (!Platform.isLinux) {
-    //   initDeepLinks();
-    // }
+    if (!Platform.isLinux) {
+      initDeepLinks();
+    }
     // TODO: implement initState
     super.initState();
   }
@@ -208,7 +157,7 @@ class _MyAppNoFirebaseState extends State<MyAppNoFirebase> {
   @override
   Widget build(BuildContext context) {
     final locale = SpUtil.getString('lan', defValue: '')!;
-    bool isDark = SpUtil.getBool("is_dark",defValue: false)!;
+    bool isDark = SpUtil.getBool("is_dark", defValue: false)!;
     Locale? storedLocale;
     if (locale.isNotEmpty) {
       final tuple = locale.split('_');
@@ -226,7 +175,7 @@ class _MyAppNoFirebaseState extends State<MyAppNoFirebase> {
         GlobalCupertinoLocalizations.delegate,
       ],
       // title: 'Clash Cross',
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light ,
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       theme: AppTheme.theme(),
       darkTheme: AppTheme.darkTheme(),
       home: const MyHomePage(),
@@ -254,11 +203,7 @@ class _MyHomePageState extends State<MyHomePage>
       'iconPath': 'assets/home.svg',
       'route': const HomePage()
     },
-    {
-      'name': '套餐'.tr,
-      'iconPath': 'assets/logo.svg',
-      'route': const Plans()
-    },
+    {'name': '套餐'.tr, 'iconPath': 'assets/logo.svg', 'route': const Plans()},
     // {
     //   'name': 'Connections'.tr,
     //   'iconPath': 'assets/active.svg',
@@ -275,17 +220,23 @@ class _MyHomePageState extends State<MyHomePage>
       'route': const UserCenter()
     }
   ];
+  final cfg = AppcastConfiguration(
+      url: "${HttpOptions.cfgurl}appcast.xml",
+      supportedOS: ['android', 'windows', "macos", "linux"]);
 
+  // final cfg = AppcastConfiguration(
+  //     url:
+  //         "https://raw.githubusercontent.com/larryaasen/upgrader/master/test/testappcast.xml",
+  //     supportedOS: ['android','windows',"macos","linux"]);
 
-
-  //提示评分
-  _inAppReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
-    }
-  }
+  // //提示评分
+  // _inAppReview() async {
+  //   final InAppReview inAppReview = InAppReview.instance;
+  //
+  //   if (await inAppReview.isAvailable()) {
+  //     inAppReview.requestReview();
+  //   }
+  // }
 
   @override
   void onWindowClose() {
@@ -305,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage>
     trayManager.popUpContextMenu();
   }
 
-  @override
+  // @override
   void onTrayMenuItemClick(MenuItem menuItem) {
     switch (menuItem.key) {
       case 'exit':
@@ -322,10 +273,10 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   void initState() {
-    _inAppReview();
+    // _inAppReview();
     windowManager.addListener(this);
     trayManager.addListener(this);
-    if(isDesktop){
+    if (isDesktop) {
       initAppTray();
     }
     super.initState();
@@ -341,115 +292,124 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkTheme = SpUtil.getBool("is_dark",defValue: false)!;
+    bool isDarkTheme = SpUtil.getBool("is_dark", defValue: false)!;
     final vs = Get.find<V2boardService>();
-      return Obx(() {
-        if(vs.isLogin.value){
-          return Scaffold(
-            appBar: !isDesktop && currentPage != 1
-                ? AppBar(
-                automaticallyImplyLeading: false,
-                shadowColor: Colors.transparent,
-                title: currentPage == 2
-                    ? Text('User Center'.tr)
-                    : const Text(HttpOptions.appName,),
-                actions: (currentPage == 0 || currentPage == 1)
-                    ? [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      // onTap: () => Navigator.of(context).push(
-                      //     MaterialPageRoute(
-                      //         builder: (builder) => const ProRoute())),
-                      // onTap: () => scanQRCode(),
-                      onTap: () => Get.to(const NoticesPage()),
-                      child: const Icon(Icons.notifications_active),
-                    ),
-                  ),
-                ]
-                    : [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      // onTap: () => Navigator.of(context).push(
-                      //     MaterialPageRoute(
-                      //         builder: (builder) => const ProRoute())),
-                      onTap: () => Get.to(const Setting()),
-                      child: const Icon(Icons.settings),
-                    ),
-                  ),
-                ])
-                : null,
+    final cs = Get.find<ClashService>();
+    return Obx(() {
+      if (vs.isLogin.value) {
+        return Scaffold(
+          appBar: !isDesktop && currentPage != 1
+              ? AppBar(
+                  automaticallyImplyLeading: false,
+                  shadowColor: Colors.transparent,
+                  title: currentPage == 2
+                      ? Text('User Center'.tr)
+                      : Text('KuangBiaoYun'.tr),
+                  actions: (currentPage == 0 || currentPage == 1)
+                      ? [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              // onTap: () => Navigator.of(context).push(
+                              //     MaterialPageRoute(
+                              //         builder: (builder) => const ProRoute())),
+                              // onTap: () => scanQRCode(),
+                              onTap: () => Get.to(const NoticesPage()),
+                              child: const Icon(Icons.notifications_active),
+                            ),
+                          ),
+                        ]
+                      : [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              // onTap: () => Navigator.of(context).push(
+                              //     MaterialPageRoute(
+                              //         builder: (builder) => const ProRoute())),
+                              onTap: () => Get.to(const Setting()),
+                              child: const Icon(Icons.settings),
+                            ),
+                          ),
+                        ])
+              : null,
 
-            /*Here Bottom Navigation Bar with some padding, margin,
+          /*Here Bottom Navigation Bar with some padding, margin,
            little bit color & border decoration*/
-            bottomNavigationBar: Container(
-              margin: const EdgeInsets.only(left: 32, right: 32, bottom: 16),
-              padding: const EdgeInsets.only(top: 8.0),
-              decoration: BoxDecoration(
-                  color:
-                  const Color(0xff353351).withOpacity(isDarkTheme ? 0.3 : 0.05),
-                  borderRadius: BorderRadius.circular(20)),
-              child: BottomNavigationBar(
-                  enableFeedback: true,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  showSelectedLabels: true,
-                  showUnselectedLabels: false,
-                  // selectedLabelStyle:
-                  //     TextStyle(color: Theme.of(context).primaryColor),
-                  // selectedItemColor: Theme.of(context).primaryColor,
-                  currentIndex: currentPage,
-                  onTap: (value) => setState(() {
-                    currentPage = value;
-                    Get.find<V2boardService>().setShowBackButton(false);
-                  }),
-                  items: List.generate(
-                      _itemsList.length,
-                          (index) => BottomNavigationBarItem(
-                        icon: SvgPicture.asset(
-                            _itemsList[index]['iconPath'] as String,
-                            height: index != currentPage ? 20 : 24,
-                            color: index != currentPage
-                                ? const Color(0xffB5AEBE)
-                                : Theme.of(context).primaryColor),
-                        label: _itemsList[index]['name'] as String,
-                      ))),
-            ),
-            // body: UpgradeAlert(
-            //     upgrader: Upgrader(
-            //       appcastConfig: cfg,
-            //       dialogStyle: UpgradeDialogStyle.cupertino,
-            //     ),
-            //     child: Column(
-            //       children: [
-            //         isDesktop ? const DeskOptions() : Container(),
-            //         Expanded(
-            //           child: _itemsList[currentPage]['route'] as Widget,
-            //         )
-            //       ],
-            //     )
-            //
-            //   // _itemsList[currentPage]['route'] as Widget),
-            // ),
-            body: Column(
-              children: [
-                isDesktop ? const DeskOptions() : Container(),
-                Expanded(
-                  child: _itemsList[currentPage]['route'] as Widget,
-                )
-              ],
-            ),
-          );
-        }else{
-          return Column(children: [
+          bottomNavigationBar: Container(
+            // margin: const EdgeInsets.only(left: 32, right: 32, bottom: 16),
+            padding: const EdgeInsets.only(top: 8.0),
+            decoration: BoxDecoration(
+                color: const Color(0xff353351)
+                    .withOpacity(isDarkTheme ? 0.3 : 0.05),
+                borderRadius: BorderRadius.circular(20)),
+            child: BottomNavigationBar(
+                enableFeedback: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                showSelectedLabels: true,
+                showUnselectedLabels: false,
+                // selectedLabelStyle:
+                //     TextStyle(color: Theme.of(context).primaryColor),
+                // selectedItemColor: Theme.of(context).primaryColor,
+                currentIndex: currentPage,
+                onTap: (value) => setState(() {
+                      currentPage = value;
+                      switch (value) {
+                        case 0:
+                          print('Apple is good for health.');
+                          // vs.getSubscribe();
+                          cs.updateSubscription("KuangBiaoYun".tr);
+                          break;
+                        case 1:
+                          vs.getPlansList();
+                          print('Banana is good for digestion.');
+                          break;
+                        case 2:
+                          print('Orange is high in vitamin C.');
+                          break;
+                        default:
+                          print('I do not know this fruit.');
+                          break;
+                      }
+                    }),
+                items: List.generate(
+                    _itemsList.length,
+                    (index) => BottomNavigationBarItem(
+                          icon: SvgPicture.asset(
+                              _itemsList[index]['iconPath'] as String,
+                              height: index != currentPage ? 20 : 24,
+                              color: index != currentPage
+                                  ? const Color(0xffB5AEBE)
+                                  : Theme.of(context).primaryColor),
+                          label: _itemsList[index]['name'] as String,
+                        ))),
+          ),
+          body: UpgradeAlert(
+              upgrader: Upgrader(
+                appcastConfig: cfg,
+                dialogStyle: UpgradeDialogStyle.cupertino,
+              ),
+              child: Column(
+                children: [
+                  isDesktop ? const DeskOptions() : Container(),
+                  Expanded(
+                    child: _itemsList[currentPage]['route'] as Widget,
+                  )
+                ],
+              )
+
+              // _itemsList[currentPage]['route'] as Widget),
+              ),
+        );
+      } else {
+        return Column(
+          children: [
             isDesktop ? const DeskOptions() : Container(),
-           const Expanded(child:  IntroductionAnimationScreen()),
-          ],);
-        }
-      });
-
-
+            const Expanded(child: IntroductionAnimationScreen()),
+          ],
+        );
+      }
+    });
   }
 
   Future<void> scanQRCode() async {
@@ -521,24 +481,24 @@ void _registerWindowsProtocol() {
 const kWindowsScheme = 'clashcross';
 const kWindowsScheme1 = 'clash';
 
-// Future<void> initDeepLinks() async {
-//   late AppLinks _appLinks;
-//   StreamSubscription<Uri>? _linkSubscription;
-//   _appLinks = AppLinks();
-//
-//   // Check initial link if app was in cold state (terminated)
-//   final appLink = await _appLinks.getInitialAppLink();
-//   if (appLink != null) {
-//     print('getInitialAppLink: $appLink');
-//     importProfile(appLink);
-//   }
-//
-//   // Handle link when app is in warm state (front or background)
-//   _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
-//     print('onAppLink: $uri');
-//     importProfile(uri);
-//   });
-// }
+Future<void> initDeepLinks() async {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+  _appLinks = AppLinks();
+
+  // Check initial link if app was in cold state (terminated)
+  final appLink = await _appLinks.getInitialAppLink();
+  if (appLink != null) {
+    print('getInitialAppLink: $appLink');
+    importProfile(appLink);
+  }
+
+  // Handle link when app is in warm state (front or background)
+  _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+    print('onAppLink: $uri');
+    importProfile(uri);
+  });
+}
 
 importProfile(Uri uri) async {
   if (uri.queryParameters["url"] != null) {

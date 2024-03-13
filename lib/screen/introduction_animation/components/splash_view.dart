@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../http/options.dart';
-
 class SplashView extends StatefulWidget {
   final AnimationController animationController;
 
@@ -45,11 +43,11 @@ class _SplashViewState extends State<SplashView> {
               //   fit: BoxFit.cover,
               // ),
             ),
-             const Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+             Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Text(
-                  HttpOptions.appName,
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                "KuangBiaoYun".tr,
+                style: const TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
               ),
             ),
             const Padding(

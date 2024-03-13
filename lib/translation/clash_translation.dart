@@ -123,7 +123,7 @@ class ClashTranslations extends Translations {
           "three_year_price": "Triennially",
           "onetime_price": "One Time",
           "reset_price": "reset_price",
-
+          "KuangBiaoYun": "VpnFly",
           "Knowledge": "Knowledge",
           "load......": "Loading...",
           "announcements": "Announcements",
@@ -168,7 +168,7 @@ class ClashTranslations extends Translations {
           "proxies": "代理列表",
           "Settings": "设置",
           "Test Delay": "测试延迟",
-          "Current using": "订阅信息:@name",
+          "Current using": "节点:@name",
           "is running as system proxy now. Enjoy.": "已经被设置为系统代理，好耶！",
           "No Logs currently / Connecting to clash log daemon...":
               "现在没有日志 / 正在连接至Clash日志后台",
@@ -314,6 +314,7 @@ class ClashTranslations extends Translations {
           "three_year_price": "三年付",
           "onetime_price": "一次性",
           "reset_price": "重置价",
+          "KuangBiaoYun": "一键连",
           "Knowledge": "使用文档",
           "load......": "加载中...",
           "announcements": "公告",
@@ -340,12 +341,12 @@ class ClashTranslations extends Translations {
           "Password": "密码",
           "The password length must be no less than 8.":
           "密码不能小于8",
-          "Account Valid":"账号有效",
-          "Valid Until":"有效期:",
+          "Account Valid":"有效期",
+          "Valid Until":"至:",
           "Account has expired":"账户已到期",
           "Renewal":"续费",
           "Out of Data":"流量已用完",
-          "Referral Rewards":"邀请赚钱",
+          "Referral Rewards":"赚取20%提成",
           "Set Mtproto":"设为电报代理",
           "Start test, please wait.":"开始测试,请稍后..."
 
