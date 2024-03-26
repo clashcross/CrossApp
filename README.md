@@ -1,3 +1,6 @@
+# 已删除源码，该项目已经不可编译！
+
+
 # CrossApp
 
 - 一款支持对接V2board的跨平台客户端，可以运行于windows、Android、macOS、Linux等平台
